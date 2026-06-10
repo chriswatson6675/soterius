@@ -127,78 +127,82 @@ const css = `
   @media (min-width: 1024px) { .lp-container { padding: 0 64px; } }
 
   /* ── Sections ── */
-  .lp-section        { padding: 80px 0; }
+  .lp-section        { padding: 88px 0; }
   .lp-section--grey  { background: #f8fafc; }
   .lp-section--blue  { background: #f8fafc; }
   .lp-section--navy  { background: #0f2540; }
+  @media (max-width: 639px) { .lp-section { padding: 56px 0; } }
 
   /* eyebrow label */
   .lp-section-label {
     display: inline-block;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
     color: #64748b;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
-  .lp-section-label--light { color: rgba(255,255,255,0.55); }
+  .lp-section-label--light { color: rgba(255,255,255,0.5); }
 
   /* section headings */
   .lp-h2 {
     font-size: 40px;
     font-weight: 600;
     color: #0f2540;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
   }
   .lp-h2--light { color: #fff; }
-  @media (max-width: 639px) { .lp-h2 { font-size: 32px; } }
+  @media (max-width: 639px) { .lp-h2 { font-size: 30px; } }
 
   /* lead paragraph */
   .lp-lead {
     font-size: 18px;
-    line-height: 1.75;
+    line-height: 1.8;
     color: #64748b;
-    max-width: 600px;
+    max-width: 580px;
     margin-bottom: 48px;
   }
-  .lp-lead--light { color: rgba(255,255,255,0.68); }
+  .lp-lead--light { color: rgba(255,255,255,0.65); }
 
   /* ── Hero ── */
   .lp-hero {
-    padding: 100px 0 88px;
+    padding: 120px 0 96px;
     background: #0f2540;
     text-align: center;
   }
   /* Icon visible on dark background */
-  .lp-hero-icon svg { stroke: rgba(255,255,255,0.45); }
+  .lp-hero-icon svg { stroke: rgba(255,255,255,0.4); }
   .lp-hero-icon {
     display: flex;
     justify-content: center;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
   .lp-hero h1 {
-    font-size: 56px;
-    font-weight: 600;
+    font-size: 64px;
+    font-weight: 700;
     color: #fff;
     line-height: 1.1;
-    letter-spacing: -0.025em;
-    margin-bottom: 24px;
-    max-width: 760px;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
   }
-  @media (max-width: 639px)  { .lp-hero h1 { font-size: 38px; letter-spacing: -0.02em; } }
-  @media (min-width: 1024px) { .lp-hero h1 { font-size: 60px; } }
+  @media (max-width: 767px)  { .lp-hero h1 { font-size: 44px; letter-spacing: -0.02em; } }
+  @media (max-width: 479px)  { .lp-hero h1 { font-size: 36px; } }
+  @media (min-width: 1024px) { .lp-hero h1 { font-size: 72px; } }
+  @media (max-width: 639px)  { .lp-hero { padding: 80px 0 64px; } }
 
   .lp-hero-sub {
     font-size: 20px;
-    line-height: 1.65;
-    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
     max-width: 560px;
-    margin: 0 auto 40px;
+    margin: 0 auto 44px;
   }
   @media (max-width: 639px) { .lp-hero-sub { font-size: 17px; } }
 
@@ -350,48 +354,48 @@ const css = `
   .lp-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
   .lp-card--grey { background: #f8fafc; }
 
-  .lp-card-icon { margin-bottom: 20px; }
+  .lp-card-icon { margin-bottom: 24px; }
   .lp-card-badge {
     display: inline-block;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #64748b;
     background: #f1f5f9;
     border-radius: 4px;
     padding: 3px 9px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .lp-card h3 {
     font-size: 18px;
     font-weight: 600;
     color: #0f2540;
-    margin-bottom: 10px;
-    line-height: 1.3;
+    margin-bottom: 12px;
+    line-height: 1.35;
   }
   .lp-card-desc {
     font-size: 14px;
     color: #64748b;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     font-style: italic;
-    line-height: 1.6;
+    line-height: 1.65;
   }
   .lp-card-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
   .lp-card-list li {
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    font-size: 14px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.6;
     color: #1f2937;
   }
-  .lp-card-list li svg { flex-shrink: 0; margin-top: 1px; }
+  .lp-card-list li svg { flex-shrink: 0; margin-top: 2px; }
 
   /* ── 2-col layout ── */
   .lp-grid-2 {
@@ -444,18 +448,18 @@ const css = `
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     margin-top: 28px;
   }
   .lp-benefit-item {
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.65;
     color: #1f2937;
   }
-  .lp-benefit-item svg { flex-shrink: 0; margin-top: 4px; }
+  .lp-benefit-item svg { flex-shrink: 0; margin-top: 3px; }
 
   /* ── Steps ── */
   .lp-steps {
@@ -492,7 +496,8 @@ const css = `
     font-size: 17px;
     font-weight: 600;
     color: #0f2540;
-    line-height: 1.35;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
   }
 
   /* ── Pricing ── */
@@ -556,7 +561,7 @@ const css = `
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 13px;
     flex: 1;
     margin-bottom: 28px;
   }
@@ -564,11 +569,11 @@ const css = `
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    font-size: 14px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.6;
     color: #1f2937;
   }
-  .lp-price-list li svg { flex-shrink: 0; margin-top: 1px; }
+  .lp-price-list li svg { flex-shrink: 0; margin-top: 2px; }
 
   /* ── FAQ ── */
   .lp-faq { margin-top: 48px; max-width: 720px; }
@@ -577,7 +582,7 @@ const css = `
     width: 100%;
     background: none;
     border: none;
-    padding: 24px 0;
+    padding: 22px 0;
     text-align: left;
     font-size: 16px;
     font-weight: 600;
@@ -588,21 +593,23 @@ const css = `
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    line-height: 1.45;
+    line-height: 1.5;
     transition: color 0.15s;
+    letter-spacing: -0.01em;
   }
   .lp-faq-q:hover { color: #1a3a52; }
   .lp-faq-a {
     font-size: 15px;
+    font-weight: 400;
     color: #64748b;
-    padding-bottom: 24px;
-    line-height: 1.75;
+    padding-bottom: 22px;
+    line-height: 1.8;
     max-width: 640px;
   }
 
   /* ── Who it's for ── */
   .lp-who-content { max-width: 680px; }
-  .lp-who-content p { font-size: 17px; line-height: 1.75; margin-bottom: 28px; color: #1f2937; }
+  .lp-who-content p { font-size: 17px; line-height: 1.8; margin-bottom: 24px; color: #1f2937; }
   .lp-who-list {
     list-style: none;
     display: flex;
@@ -614,25 +621,26 @@ const css = `
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.65;
     color: #1f2937;
   }
-  .lp-who-list li svg { flex-shrink: 0; margin-top: 4px; }
+  .lp-who-list li svg { flex-shrink: 0; margin-top: 3px; }
 
   /* ── Final CTA ── */
   .lp-final-cta {
-    padding: 96px 0;
+    padding: 104px 0;
     background: #fff;
     text-align: center;
     border-top: 1px solid #e2e8f0;
   }
-  .lp-final-cta .lp-h2 { margin-bottom: 14px; }
+  @media (max-width: 639px) { .lp-final-cta { padding: 64px 0; } }
+  .lp-final-cta .lp-h2 { margin-bottom: 16px; }
   .lp-final-cta-sub {
     font-size: 18px;
     color: #64748b;
     margin-bottom: 40px;
-    line-height: 1.6;
+    line-height: 1.7;
   }
   .lp-final-scan-form { max-width: 540px; margin: 0 auto; }
 
