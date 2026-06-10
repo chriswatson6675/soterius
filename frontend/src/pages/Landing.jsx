@@ -171,7 +171,7 @@ const css = `
   /* ── Hero ── */
   .lp-hero {
     padding: 100px 0 88px;
-    background: #fff;
+    background: #0d7a7a;
     text-align: center;
   }
   .lp-hero-icon {
