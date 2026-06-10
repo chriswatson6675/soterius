@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { scanDomain, submitGate } from '../services/api';
+import { scanDomain, submitGate, downloadReport } from '../services/api';
 import ScannerCard from '../components/ScannerCard';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -455,6 +455,32 @@ function ResultsView({ data, onBack }) {
   const [gateOpen,   setGateOpen]   = useState(false);
   const [gatePassed, setGatePassed] = useState(false);
   const [toast,      setToast]      = useState('');
+  const [dlState,    setDlState]    = useState('idle'); // 'idle' | 'loading' | 'error'
+
+  async function handleDownload() {
+    setDlState('loading');
+    try {
+      const riskLevel = score >= 80 ? 'low' : score >= 50 ? 'medium' : 'critical';
+      const blob = await downloadReport({
+        domain:       data.domain,
+        timestamp:    data.scannedAt,
+        scanners:     data.scanners,
+        overallScore: score,
+        riskLevel,
+      });
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = `${data.domain}-security-report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setDlState('idle');
+    } catch {
+      setDlState('error');
+    }
+  }
 
   function handleGateSuccess(email) {
     setGateOpen(false);
@@ -486,6 +512,22 @@ function ResultsView({ data, onBack }) {
 
         {/* ── Score card — always visible ── */}
         <ScoreCard score={score} scanners={data.scanners || []} />
+
+        {/* ── PDF download — visible after gate ── */}
+        {gatePassed && (
+          <div className="rp-download-row">
+            <button
+              className="rp-btn-download"
+              onClick={handleDownload}
+              disabled={dlState === 'loading'}
+            >
+              {dlState === 'loading' ? 'Downloading…' : '↓ Download Security Report (PDF)'}
+            </button>
+            {dlState === 'error' && (
+              <p className="rp-download-err">Download failed — please try again</p>
+            )}
+          </div>
+        )}
 
         {/* ── Scanner grid — blurred until gate passes ── */}
         <div className={`rp-grid-wrap${gatePassed ? '' : ' rp-grid-locked'}`}>
@@ -728,6 +770,37 @@ const css = `
   .rp-risk-high     { color: #ea580c;              background: rgba(234,88,12,0.12); }
   .rp-risk-critical { color: var(--color-danger);  background: rgba(220,38,38,0.12); }
   .rp-issue-summary { font-size: 15px; color: var(--color-text-muted); line-height: 1.4; }
+
+  /* ── PDF download row ────────────────────────────────────── */
+  .rp-download-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .rp-btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #0f2540;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    min-height: 44px;
+  }
+  .rp-btn-download:hover:not(:disabled) { background: #1a3a52; }
+  .rp-btn-download:disabled { opacity: 0.65; cursor: default; }
+  .rp-download-err {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--color-danger);
+  }
 
   /* ── Scanner grid + gate ─────────────────────────────────── */
   .rp-grid-wrap {
