@@ -1,39 +1,14 @@
-import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import Landing from './pages/Landing';
-import Home from './pages/Home';
 import Results from './pages/Results';
 import './App.css';
 
-function ScanApp() {
-  const [page,     setPage]     = useState('home');
-  const [scanData, setScanData] = useState(null);
-
-  function handleScanComplete(data) {
-    setScanData(data);
-    setPage('results');
-  }
-
-  function handleReset() {
-    setScanData(null);
-    setPage('home');
-  }
-
+function NotFound() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="app-header-inner">
-          <span className="app-logo">🔒 Soterius</span>
-          <span className="app-tagline">GDPR Compliance Scanner</span>
-        </div>
-      </header>
-      <main className="app-main">
-        {page === 'home'    && <Home    onScanComplete={handleScanComplete} />}
-        {page === 'results' && <Results data={scanData} onReset={handleReset} />}
-      </main>
-      <footer className="app-footer">
-        <p>Soterius — Free GDPR compliance checks. No data stored.</p>
-      </footer>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit', gap: 16 }}>
+      <h1 style={{ fontSize: 48, fontWeight: 700, color: '#0f2540' }}>404</h1>
+      <p style={{ color: '#64748b', fontSize: 16 }}>Page not found.</p>
+      <Link to="/" style={{ color: '#2563eb', fontSize: 15 }}>← Back to home</Link>
     </div>
   );
 }
@@ -43,7 +18,7 @@ export default function App() {
     <Routes>
       <Route path="/"        element={<Landing />} />
       <Route path="/results" element={<Results />} />
-      <Route path="/*"       element={<ScanApp />} />
+      <Route path="*"        element={<NotFound />} />
     </Routes>
   );
 }

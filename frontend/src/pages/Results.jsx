@@ -12,13 +12,13 @@ const IT_MGMT_OPT = ['In-house', 'Outsourced', 'Hybrid', 'No formal process'];
 
 function getRiskKey(score) {
   if (score >= 80) return 'low';
-  if (score >= 50) return 'medium';
+  if (score >= 60) return 'medium';
   return 'critical';
 }
 
 function getRiskLabel(score) {
   if (score >= 80) return 'Low Risk';
-  if (score >= 50) return 'Medium Risk';
+  if (score >= 60) return 'Medium Risk';
   return 'Critical Risk';
 }
 
@@ -69,7 +69,7 @@ function Loading({ domain }) {
         <div className="rp-state-box" role="status" aria-live="polite">
           <div className="rp-state-icon" aria-hidden="true">🔍</div>
           <h2>Scanning {domain}</h2>
-          <p>Running 6 security checks. This usually takes 30–60 seconds.</p>
+          <p>Running 5 security checks. This usually takes 30–60 seconds.</p>
         </div>
       </div>
       <PageFooter />
@@ -252,18 +252,12 @@ function GateModal({ domain, scanScore, scanResults, onSuccess, onClose }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log('[GATE] handleSubmit fired');
-    console.log('[GATE] API URL:', import.meta.env.VITE_API_URL || 'NOT SET — falling back to localhost');
-    console.log('[GATE] Payload domain:', domain, '| email:', fields.email);
     setBusy(true);
     setError('');
     try {
-      console.log('[GATE] Calling submitGate...');
-      const result = await submitGate({ domain, scanScore, scanResults, ...fields });
-      console.log('[GATE] Success:', result);
+      await submitGate({ domain, scanScore, scanResults, ...fields });
       onSuccess(fields.email.trim());
     } catch (err) {
-      console.error('[GATE] Error:', err);
       setError(err.message || 'Submission failed. Please try again.');
       setBusy(false);
     }
@@ -460,13 +454,12 @@ function ResultsView({ data, onBack }) {
   async function handleDownload() {
     setDlState('loading');
     try {
-      const riskLevel = score >= 80 ? 'low' : score >= 50 ? 'medium' : 'critical';
       const blob = await downloadReport({
         domain:       data.domain,
         timestamp:    data.scannedAt,
         scanners:     data.scanners,
         overallScore: score,
-        riskLevel,
+        riskLevel:    getRiskKey(score),
       });
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');

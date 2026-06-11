@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function cleanDomain(raw) {
@@ -752,17 +752,19 @@ function ScanForm({ inputId }) {
 /* ── FAQ Item ─────────────────────────────────────────────────── */
 function FaqItem({ q, a }) {
   const [open, setOpen] = useState(false);
+  const answerId = useId();
   return (
     <div className="lp-faq-item">
       <button
         className="lp-faq-q"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
+        aria-controls={answerId}
       >
         {q}
         <IconChevron open={open} />
       </button>
-      {open && <p className="lp-faq-a">{a}</p>}
+      <p id={answerId} className="lp-faq-a" hidden={!open}>{a}</p>
     </div>
   );
 }

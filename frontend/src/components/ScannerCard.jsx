@@ -13,24 +13,27 @@ const SCANNER_ICONS = {
 
 function cardStatus(score) {
   if (score >= 80) return 'pass';
-  if (score >= 50) return 'warn';
+  if (score >= 60) return 'warn';
   return 'fail';
 }
 
 function checkBadge(status) {
-  if (status === 'PASS')    return { icon: '✓', css: 'pass', label: 'Pass'    };
-  if (status === 'WARNING') return { icon: '⚠', css: 'warn', label: 'Warning' };
-  return                           { icon: '✕', css: 'fail', label: 'Fail'    };
+  const s = String(status || '').toUpperCase();
+  if (s === 'PASS')    return { icon: '✓', css: 'pass', label: 'Pass'    };
+  if (s === 'WARNING') return { icon: '⚠', css: 'warn', label: 'Warning' };
+  return                      { icon: '✕', css: 'fail', label: 'Fail'    };
 }
 
 export default function ScannerCard({ name, score, checks }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const icon       = SCANNER_ICONS[name] ?? '🔍';
   const status     = cardStatus(score);
-  const issueCount = checks.filter(c => c.status !== 'PASS').length;
+  const issueCount = checks.filter(c => String(c.status || '').toUpperCase() !== 'PASS').length;
   const summaryText = issueCount === 0
     ? `All ${checks.length} checks passed`
     : `${issueCount} of ${checks.length} checks need attention`;
+
+  const bodyId = `card-body-${name.replace(/\s+/g, '-').toLowerCase()}`;
 
   function toggle() { setIsExpanded(e => !e); }
 
@@ -43,6 +46,7 @@ export default function ScannerCard({ name, score, checks }) {
         role="button"
         tabIndex={0}
         aria-expanded={isExpanded}
+        aria-controls={bodyId}
         aria-label={`${name} — ${isExpanded ? 'collapse' : 'expand'} details`}
         onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } }}
       >
@@ -61,13 +65,13 @@ export default function ScannerCard({ name, score, checks }) {
         <p className="card-explanation">{summaryText}</p>
       </div>
 
-      <div className={`card-body${isExpanded ? ' card-body-open' : ''}`}>
+      <div id={bodyId} className={`card-body${isExpanded ? ' card-body-open' : ''}`}>
         <div className="card-body-inner">
           <ul className="sc-checks-list" aria-label="Individual checks">
             {checks.map((check, i) => {
               const badge = checkBadge(check.status);
               return (
-                <li key={i} className={`sc-check sc-check-${badge.css}`}>
+                <li key={check.name ?? i} className={`sc-check sc-check-${badge.css}`}>
                   <span className={`sc-check-badge sc-badge-${badge.css}`} aria-label={badge.label}>
                     {badge.icon}
                   </span>

@@ -6,8 +6,8 @@ import './Home.css';
 
 const STEPS = [
   { icon: '🔍', title: 'Enter your domain', desc: 'Type in your website address — no sign-up required.' },
-  { icon: '⚡', title: 'Instant scan', desc: '7 scanners run in parallel: SSL, headers, DNS, ports, subdomains, tech, GDPR.' },
-  { icon: '📊', title: 'Get your report', desc: 'See your compliance score, risk level, and exactly what to fix.' },
+  { icon: '⚡', title: 'Instant scan', desc: '5 scanners run in parallel: SSL, headers, email security, vulnerable components, GDPR.' },
+  { icon: '📊', title: 'Get your report', desc: 'See your security score, risk level, and exactly what to fix.' },
 ];
 
 const FAQS = [
@@ -54,9 +54,9 @@ export default function Home({ onScanComplete }) {
     <div className="home">
       <section className="hero" aria-label="Scanner hero">
         <div className="hero-inner">
-          <h1 className="hero-title">Free GDPR Compliance Check</h1>
+          <h1 className="hero-title">Free Website Security Check</h1>
           <p className="hero-sub">
-            Scan any website for security issues and GDPR compliance in seconds.
+            Scan any website for security vulnerabilities and compliance issues in seconds.
             No sign-up. No data stored.
           </p>
 
