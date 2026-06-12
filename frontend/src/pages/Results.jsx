@@ -470,7 +470,8 @@ function ResultsView({ data, onBack }) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       setDlState('idle');
-    } catch {
+    } catch (err) {
+      console.error('PDF download failed:', err);
       setDlState('error');
     }
   }

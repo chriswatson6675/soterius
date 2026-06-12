@@ -35,12 +35,9 @@ export async function downloadReport(payload) {
   } catch (err) {
     if (err.response?.data instanceof Blob) {
       const text = await err.response.data.text();
-      try {
-        const parsed = JSON.parse(text);
-        throw new Error(parsed.error || 'PDF generation failed');
-      } catch {
-        throw new Error('PDF generation failed');
-      }
+      let parsed;
+      try { parsed = JSON.parse(text); } catch { /* not JSON */ }
+      throw new Error(parsed?.error || 'PDF generation failed');
     }
     throw new Error(handleError(err));
   }
