@@ -4,6 +4,32 @@
 
 ## 2026-06-13
 
+### Score History, Trend Analysis, and Change Detection
+
+**Version:** UX v1.0
+
+**Changes:**
+- **Business Headline** — plain-English summary displayed immediately after scan; leads with outcome ("Security Rating improved by 13 points"), notes band changes, resolved risks, and new issues
+- **Score History panel** — current score vs previous score side-by-side with a Change column (diff + direction arrow + Improved/Declined/Unchanged)
+- **Category Trends** — per-scanner progress bars with current % and +/- diff vs previous scan; overall verdict badge (Improving / Declining / Stable)
+- **Change Detection** — check-level comparison between current and previous scan, grouped into: Resolved (was FAIL/WARNING, now PASS), Improved (FAIL→WARNING), New Issues (PASS→FAIL/WARNING or newly appeared), Deteriorated (WARNING→FAIL)
+- **First-scan notice** — shown on a domain's first scan to set expectation that history will accumulate
+- All history sections visible to all users before gate — they demonstrate value and make the gate more compelling
+- Graceful degradation: history fetch failure is silent, sections simply don't render
+- Backend: `GET /api/scan/history/:domain` now returns `scanner_results` for check-level comparison
+
+**Files Modified:**
+- `frontend/src/pages/Results.jsx` — `BusinessHeadline`, `ScoreHistory`, `TrendPanel`, `ChangeDetection`, `FirstScanNotice` components; `detectChanges()` algorithm; `Results` root fetches history; all CSS inline
+- `frontend/src/services/api.js` — `getScanHistory(domain, limit)` function added
+- `backend/services/database.js` — `getScanHistory` SELECT updated to include `scanner_results`
+
+**Database Changes:**
+- None (uses existing `scans` table; `scanner_results` column was already stored)
+
+---
+
+## 2026-06-13
+
 ### Permanent Scan History
 
 **Version:** Data Layer v1.0

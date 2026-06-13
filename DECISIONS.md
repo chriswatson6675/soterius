@@ -6,6 +6,24 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D011 — History sections visible before the gate
+**Decision:** Business Headline, Score History, Category Trends, and Change Detection are all rendered without requiring gate submission.
+
+**Reason:** The history sections ARE the value demonstration — hiding them behind the gate defeats the purpose. Showing a user that their score improved from 61 to 74, their Email Security moved from High Risk to Moderate Risk, and that 2 risks were resolved makes the gate more compelling, not less. The gate unlocks the per-check detail and the PDF report; history is the hook.
+
+**Impact:** History sections appear between the ScoreCard and the scanner grid. The scanner grid remains blurred. This split creates a clear value ladder: "you can see you improved — find out exactly what to fix next."
+
+---
+
+### D010 — Change detection at check level, not category level
+**Decision:** `detectChanges()` compares individual check names (`c.name`) between current and previous `scanner_results`. Categories are shown as context labels only.
+
+**Reason:** Category-level comparison (e.g. "Email Security went from 39% to 61%") is covered by the Trend panel. Change detection is most useful when it tells you specifically which finding was fixed or broke — e.g. "DMARC Missing → resolved" is actionable; "Email Security improved" is not.
+
+**Impact:** Requires `scanner_results` to be returned in the history endpoint (added to the SELECT). Check names must remain stable across scans for the diff to be meaningful — do not rename checks without considering history continuity.
+
+---
+
 ### D009 — Per-check `points` field for non-standard scoring
 **Decision:** Checks carry an optional `points` field. The scoring engine uses `check.points` if present (`typeof c.points === 'number'`) and falls back to the category-level `def.pts[status]` otherwise.
 

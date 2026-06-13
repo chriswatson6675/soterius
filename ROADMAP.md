@@ -4,7 +4,7 @@
 
 ## Now
 
-Nothing in active development. All planned v1.0 work is complete.
+Nothing in active development.
 
 **Pending prerequisite (manual action required):**
 - Run Supabase migrations to activate scan history:
@@ -18,14 +18,8 @@ Nothing in active development. All planned v1.0 work is complete.
 
 Features approved for the next development cycle, ordered by dependency.
 
-### Score History UI
-Display a firm's past scans on the results page — date, score, risk band — using the `/api/scan/history/:domain` endpoint that is already live. Requires the Supabase migrations to be applied first.
-
-### Trend Chart
-A sparkline or small line chart on the results page showing score movement over time. Depends on scan history data accumulating. Should visually highlight direction (improving / declining / stable) not just absolute score.
-
 ### Monitoring Subscription
-Allow a firm to opt in to monthly automated rescans. Stores `{domain, email, frequency}` in a new `monitoring_subscriptions` table. A cron job (Railway scheduled task) runs the scan and emails a comparison: new score vs. previous score, what changed, and recommended next actions.
+Allow a firm to opt in to monthly automated rescans. Stores `{domain, email, frequency}` in a new `monitoring_subscriptions` table. A cron job (Railway scheduled task) runs the scan and emails a comparison: new score vs. previous score, what changed, and recommended next actions. This is the direct commercial follow-on to the history features now live.
 
 ### Admin Dashboard
 Web-based view of submissions: domain, score, risk band, date, firm name, concern — replacing the current CSV download. Filter and sort by risk band. Useful for identifying the highest-risk firms to contact proactively.
@@ -54,6 +48,9 @@ Allow IT managed service providers to run scans and brand the PDF report for the
 ---
 
 ## Completed
+
+### Score History, Trend Analysis, Change Detection — 2026-06-13
+Business Headline + Score History panel + Category Trends bar chart + check-level Change Detection. All visible before gate. First-scan notice for baseline scans. History fetch is async and degrades gracefully on failure.
 
 ### Scan History Storage — 2026-06-13
 Every `POST /api/scan` creates an immutable record in a new `scans` table. `GET /api/scan/history/:domain` endpoint live. Gate submissions linked to scan records via `scan_id` FK.
