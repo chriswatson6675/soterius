@@ -20,6 +20,29 @@ This repository is the single source of truth for all product and technical deci
 
 ## Now
 
+### Benchmark Cohort 001 — North Wales Solicitor Benchmark ← active cohort
+
+**Scope:** All solicitor firms within 25 miles of LL30 2UB.  
+**Target:** 71 firms.
+
+**Objectives:**
+- Establish first regional benchmark dataset
+- Validate Security Rating v1.0
+- Measure adoption of key controls
+- Identify common security weaknesses
+- Produce first Soterius benchmark report
+
+**Tasks:**
+- [ ] Scan all 71 firms via Research Mode
+- [ ] Record scores and risk bands
+- [ ] Generate benchmark statistics
+- [ ] Document findings
+- [ ] Produce first Soterius benchmark report
+
+**Success criteria:** All 71 firms scanned, benchmark statistics generated, findings documented.
+
+---
+
 ### Build First Soterius Benchmark Dataset ← current priority — board approved
 
 Scan 250 UK professional services firms and establish the first proprietary benchmark dataset. Full process documented in [CALIBRATION.md](CALIBRATION.md). Board decision recorded in [BOARD.md](BOARD.md).

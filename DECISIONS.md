@@ -6,6 +6,16 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D021 — Complete regional cohort over sample-based pilot
+
+**Decision:** Benchmark Cohort 001 will scan all 71 solicitor firms within 25 miles of LL30 2UB rather than a sample subset.
+
+**Reason:** A full regional cohort provides stronger statistical value, more credible reporting, and richer calibration data. A complete dataset covering every firm in a defined area is more defensible than a selected sample — it eliminates selection bias, enables genuine "all firms in this region" claims, and produces a benchmark report with real authority.
+
+**Expected outcome:** First Soterius benchmark report covering all solicitor firms within 25 miles of LL30 2UB. Sector averages, risk band distribution, DMARC adoption, and security header adoption rates all based on the complete regional population.
+
+---
+
 ### D020 — Research Mode implemented as a single quick-scan endpoint + frontend page
 
 **Decision:** Research Mode is implemented as `POST /api/prospects/quick-scan` (find-or-create prospect + scan in one call) plus a `/research` frontend page. The existing public scan workflow and gate form are not modified.

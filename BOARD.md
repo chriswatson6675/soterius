@@ -6,6 +6,7 @@ Board-level record of major decisions and approvals. Operational decisions are i
 
 | Date | Decision | Owner | Status |
 |---|---|---|---|
+| 2026-06-13 | Benchmark Cohort 001 approved — North Wales Solicitor Benchmark, 71 firms | CEO | Active |
 | 2026-06-13 | Phase transition — Foundation Phase complete, Benchmark Phase active | CEO | Active |
 | 2026-06-13 | Build first Soterius benchmark dataset — 250 professional services firms | CEO | Active |
 | 2026-06-13 | Repository designated as single source of truth for all product, technical and business decisions | CEO | Implemented |
@@ -19,6 +20,38 @@ Board-level record of major decisions and approvals. Operational decisions are i
 ---
 
 ## Decision Detail
+
+### 2026-06-13 — Benchmark Cohort 001: North Wales Solicitor Benchmark
+
+**Decision:** Benchmark Cohort 001 is approved as a complete regional cohort — all solicitor firms within 25 miles of LL30 2UB (71 firms).
+
+**Owner:** CEO
+
+**Status:** Active
+
+**Scope:** All solicitor firms within 25 miles of LL30 2UB.
+
+**Target size:** 71 firms.
+
+**Objectives:**
+- Establish first regional benchmark dataset
+- Validate Security Rating v1.0
+- Measure adoption of key controls (DMARC, security headers, SSL/TLS)
+- Identify common security weaknesses across the sector
+- Produce first Soterius benchmark report
+
+**Success criteria:**
+- All 71 firms scanned
+- Scores recorded
+- Risk bands recorded
+- Benchmark statistics generated
+- Findings documented
+
+**Rationale:** A full regional cohort provides stronger statistical value, more credible reporting, and richer calibration data than a sample-based pilot. Scanning every firm in a defined geographic area produces a complete picture rather than a partial one.
+
+**Expected outcome:** First Soterius benchmark report covering all solicitor firms within 25 miles of LL30 2UB.
+
+---
 
 ### 2026-06-13 — Phase Transition: Foundation Phase Complete, Benchmark Phase Active
 
