@@ -54,6 +54,18 @@ export async function downloadReport(payload) {
   }
 }
 
+export async function quickScan(token, payload) {
+  try {
+    const { data } = await api.post('/api/prospects/quick-scan', payload, {
+      headers: { 'X-Admin-Token': token },
+    });
+    return data;
+  } catch (err) {
+    if (err.response?.status === 401) throw new Error('Invalid admin token');
+    throw new Error(handleError(err));
+  }
+}
+
 function handleError(err) {
   if (err.response) {
     const msg = err.response.data?.error;

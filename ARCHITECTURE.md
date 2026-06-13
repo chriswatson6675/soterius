@@ -1,7 +1,7 @@
 # Soterius Architecture
 
 **Authoritative source:** This file. Do not derive architecture from code comments or conversation history.  
-**Last updated:** 2026-06-13
+**Last updated:** 2026-06-13 (benchmarking data foundation)
 
 ---
 
@@ -52,7 +52,8 @@ soterius/                        ← root repo (this repository)
 │   ├── routes/
 │   │   ├── scan.js              ← scan, history, gate, PDF-by-submission
 │   │   ├── report.js            ← in-memory PDF generation
-│   │   └── gate.js              ← admin CSV export
+│   │   ├── gate.js              ← admin CSV export
+│   │   └── prospects.js         ← admin prospect CRUD + scan trigger + benchmarks
 │   ├── scanners/
 │   │   ├── ssl-check.js
 │   │   ├── dns-check.js         ← email security (SPF, DKIM, DMARC)
@@ -62,7 +63,8 @@ soterius/                        ← root repo (this repository)
 │   ├── pdf-generator/
 │   │   └── generator.js         ← Puppeteer HTML→PDF
 │   ├── services/
-│   │   └── database.js          ← Supabase client + all DB functions
+│   │   ├── database.js          ← Supabase client + all DB functions
+│   │   └── scanService.js       ← executeScan, SCANNERS, MAX_POINTS, getRiskLevel/Band
 │   ├── utils/
 │   │   ├── emailService.js      ← Resend integration
 │   │   ├── pdfAdapter.js        ← maps scanner format to PDF format
@@ -73,13 +75,16 @@ soterius/                        ← root repo (this repository)
 │   └── db/
 │       └── migrations/
 │           ├── 001_create_scans_table.sql
-│           └── 002_add_scan_id_to_submissions.sql
+│           ├── 002_add_scan_id_to_submissions.sql
+│           ├── 003_create_prospects_table.sql
+│           └── 004_add_prospect_id_to_scans.sql
 ├── frontend/
 │   └── src/
 │       ├── pages/
 │       │   ├── Landing.jsx
 │       │   ├── Home.jsx
-│       │   └── Results.jsx      ← main results page (all history/trend UI)
+│       │   ├── Results.jsx      ← main results page (all history/trend UI)
+│       │   └── Research.jsx     ← Research Mode (admin-only, token-gated, /research)
 │       ├── components/
 │       │   └── ScannerCard.jsx
 │       └── services/
@@ -125,6 +130,20 @@ All endpoints are prefixed with the Railway backend URL. Frontend uses `VITE_API
 | Method | Path | Auth | Description |
 |---|---|---|---|
 | GET | `/api/gate/submissions.csv` | `X-Admin-Token` header | Downloads CSV of all submissions |
+
+### Prospects (Market Calibration / Benchmarking)
+
+All endpoints require `X-Admin-Token` header.
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| GET | `/api/prospects/benchmarks` | `X-Admin-Token` | Aggregate stats: avg score by sector/location, band distribution, top 20 failed checks |
+| GET | `/api/prospects` | `X-Admin-Token` | List all prospects; optional `?sector=` `?location=` `?source=` filters |
+| POST | `/api/prospects` | `X-Admin-Token` | Create a prospect; website normalised to bare domain; 409 on duplicate |
+| GET | `/api/prospects/:id` | `X-Admin-Token` | Single prospect with full scan history |
+| PATCH | `/api/prospects/:id` | `X-Admin-Token` | Update firm_name, sector, location, source, notes (website not patchable) |
+| POST | `/api/prospects/quick-scan` | `X-Admin-Token` | Research Mode: find-or-create prospect by website + scan in one call; returns `created: bool` |
+| POST | `/api/prospects/:id/scan` | `X-Admin-Token` | Triggers full 5-scanner scan; persists with prospect_id; updates last_scanned |
 
 ---
 
@@ -177,12 +196,40 @@ Permanent, immutable record of every scan. Never updated after insert.
 - `idx_scans_domain` — domain lookup
 - `idx_scans_domain_scanned_at` — domain history ordered by time (primary query pattern)
 - `idx_scans_scanned_at` — global date index (dashboards, benchmarking)
+- `idx_scans_prospect_id` — all scans for a given prospect
 - `idx_scans_score_object` — GIN on score_object JSONB
 - `idx_scans_scanner_results` — GIN on scanner_results JSONB
+
+### `prospects` table
+
+Stores professional services firms for market calibration and benchmarking. A prospect may have many scans (via `scans.prospect_id` FK).
+
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | auto-generated |
+| firm_name | text NOT NULL | display name of the firm |
+| website | text NOT NULL UNIQUE | bare domain, lowercased (e.g. `smithllp.co.uk`) |
+| sector | text | solicitors \| accountants \| financial-advisers \| surveyors \| other |
+| location | text | city / region (free text) |
+| source | text NOT NULL DEFAULT 'manual' | manual \| sra-register \| icaew-register \| fca-register |
+| first_seen | timestamptz | when the prospect was added |
+| last_scanned | timestamptz | updated by `POST /api/prospects/:id/scan` |
+| notes | text | free-text admin notes |
+| created_at | timestamptz | auto |
+| updated_at | timestamptz | updated on every PATCH |
+
+**Indexes on `prospects`:**
+- `idx_prospects_website` — unique index on `lower(website)` (enforces deduplication)
+- `idx_prospects_sector` — sector-level benchmarking queries
+- `idx_prospects_location` — region-level benchmarking queries
+- `idx_prospects_last_scanned DESC NULLS LAST` — surfaces unscanned prospects first
+- `idx_prospects_source` — filter by data source
 
 **Migrations:** Run in Supabase SQL Editor in order:
 1. `backend/db/migrations/001_create_scans_table.sql`
 2. `backend/db/migrations/002_add_scan_id_to_submissions.sql`
+3. `backend/db/migrations/003_create_prospects_table.sql`
+4. `backend/db/migrations/004_add_prospect_id_to_scans.sql`
 
 ---
 
@@ -299,6 +346,66 @@ GET /api/scan/history/:domain → SELECT from scans WHERE domain = ? ORDER BY sc
 **`score_object` fields used by history UI:**
 - `score_object.categoryBreakdown[key].percentage` — per-category trend
 - `overall_score` column — overall score for history table (denormalised for query performance)
+
+---
+
+## Scan Service
+
+`backend/services/scanService.js` is the single source of scan execution logic. Both the public scan route and the admin prospects route import from it.
+
+**Exports:**
+- `executeScan(domain)` — runs all 5 scanners, returns `{ score, riskLevel, scannedAt, totalPoints, maxPoints, scanners, scoreObject }`; does NOT persist to the database
+- `getRiskLevel(pct)` — maps percentage to risk band label
+- `getRiskBand(pct)` — alias for `getRiskLevel` (used for per-category ratings)
+- `SCANNERS` — array of scanner definitions with `key`, `name`, `fn`, `maxPoints`, `pts`
+- `MAX_POINTS` — 206 (sum of all scanner maxPoints)
+
+The scoring methodology is contained entirely within `scanService.js`. Any future scoring change must be made here and here only; routes are consumers, not owners of scoring logic.
+
+---
+
+## Benchmarking Architecture
+
+The `prospects` table + `scans.prospect_id` FK is the foundation for all market calibration and benchmarking features.
+
+**Data flow:**
+```
+Admin: POST /api/prospects → creates prospect record
+Admin: POST /api/prospects/:id/scan
+  → executeScan(domain)
+  → saveScan(domain, scoreObject, scanners, prospectId)  ← prospect_id set
+  → updateProspectLastScanned(prospectId)
+  → response with full scan result
+
+Admin: GET /api/prospects/benchmarks
+  → getBenchmarkData()  ← fetches all scans WHERE prospect_id IS NOT NULL, joined with prospects
+  → in-memory aggregation by sector, location, band, failed checks
+  → response: { bySector, byLocation, bandDistribution, topFailedChecks }
+```
+
+**`/api/prospects/benchmarks` response shape:**
+```json
+{
+  "success": true,
+  "totalScans": 47,
+  "bySector": [
+    { "label": "solicitors", "count": 18, "avgScore": 61, "minScore": 34, "maxScore": 89 }
+  ],
+  "byLocation": [
+    { "label": "London", "count": 12, "avgScore": 65, "minScore": 41, "maxScore": 89 }
+  ],
+  "bandDistribution": {
+    "Critical Risk": 8, "High Risk": 15, "Moderate Risk": 14, "Good": 8, "Excellent": 2
+  },
+  "topFailedChecks": [
+    { "name": "DMARC Missing", "count": 31 },
+    { "name": "Content-Security-Policy Missing", "count": 28 }
+  ]
+}
+```
+
+**Relationship to public scans:**
+Public scans (via `POST /api/scan`) always have `prospect_id = null`. They are excluded from benchmark aggregations. This keeps market research data clean and separate from user-initiated scans.
 
 ---
 

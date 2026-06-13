@@ -2,41 +2,46 @@
 
 This repository is the single source of truth for all product and technical decisions. See also: [VISION.md](VISION.md) · [SCORING.md](SCORING.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [DECISIONS.md](DECISIONS.md) · [BOARD.md](BOARD.md)
 
-| Phase | Name | Status |
+**Current company phase: Benchmark Phase** — see [BOARD.md](BOARD.md)
+
+| Company Phase | Status |
+|---|---|
+| Foundation Phase | ✅ Complete |
+| Benchmark Phase | 🔄 Active |
+| Growth Phase | Planned |
+
+| Product Phase | Name | Status |
 |---|---|---|
 | 1 | Security Rating | ✅ Complete |
-| 2 | Security Rating + Monitoring | 🔄 In Progress |
+| 2 | Security Rating + Monitoring | Planned (after Benchmark Phase) |
 | 3 | Digital Risk Management | Planned |
 
 ---
 
 ## Now
 
-### Market Calibration & Score Validation ← current priority
+### Build First Soterius Benchmark Dataset ← current priority — board approved
 
-Validate Security Rating v1.0 against real-world professional services firms before continuing feature development.
+Scan 250 UK professional services firms and establish the first proprietary benchmark dataset. Full process documented in [CALIBRATION.md](CALIBRATION.md). Board decision recorded in [BOARD.md](BOARD.md).
 
-**Objective:** Confirm that the Security Rating model produces commercially credible results across a representative sample of the target market.
+**Objective:** Build a statistically meaningful benchmark dataset that validates Security Rating v1.0, informs marketing, and establishes the data foundation for monitoring and trust-mark features.
+
+**Target:** 250 firms across solicitors, accountants, financial advisers, and surveyors.
 
 **Tasks:**
-- [ ] Scan 50 professional services firms (solicitors, accountants, financial advisers)
-- [ ] Record scores and risk bands for each firm
-- [ ] Assess whether results feel credible — are scores too harsh, too generous, or well-calibrated?
-- [ ] Identify any scoring anomalies or unexpected outcomes
-- [ ] Establish preliminary benchmark ranges by sector and firm size
-- [ ] Document all findings in `CALIBRATION.md`
+- [ ] Scan 250 professional services firms
+- [ ] Record analyst notes per firm
+- [ ] Establish sector benchmarks (average score per sector)
+- [ ] Establish risk band distribution
+- [ ] Establish DMARC adoption rate
+- [ ] Establish security header adoption rate
+- [ ] Calculate average scores by sector
+- [ ] Complete Findings section in CALIBRATION.md
+- [ ] Record credibility verdict
 
-**Success criteria:** A representative sample has been analysed and the Security Rating model is considered commercially credible. Findings documented in CALIBRATION.md.
+**Success criteria:** All benchmark statistics above are established and recorded. Credibility verdict made in CALIBRATION.md.
 
-**Why this comes first:** Feature development on top of an uncalibrated model risks building the wrong thing. Market credibility must be established before investing in monitoring, benchmarking, or trust-mark tiers.
-
----
-
-**Pending prerequisite (manual action required):**
-- Run Supabase migrations to activate scan history:
-  1. Open Supabase SQL Editor
-  2. Run `backend/db/migrations/001_create_scans_table.sql`
-  3. Run `backend/db/migrations/002_add_scan_id_to_submissions.sql`
+**Why this comes first:** Benchmark data underpins the commercial proposition, validates the model, and provides the evidence base for every downstream feature — monitoring thresholds, trust-mark eligibility, and peer comparison.
 
 ---
 
@@ -57,7 +62,9 @@ Web-based view of submissions: domain, score, risk band, date, firm name, concer
 Features to consider after the Next cycle is complete.
 
 ### Industry Benchmarking
-Compare a firm's score against the sector average. Requires sufficient scan volume to compute meaningful averages per sector (solicitors / accountants / financial advisers). Stored in a `benchmarks` table updated periodically. Display: "Your score is in the top 30% of accountancy firms."
+Compare a firm's score against the sector average. Requires sufficient scan volume to compute meaningful averages per sector (solicitors / accountants / financial advisers). Display: "Your score is in the top 30% of accountancy firms."
+
+**Data foundation is live:** prospects table, `prospect_id` FK on scans, and `/api/prospects/benchmarks` aggregation endpoint are all in place. This feature now requires only scan volume and a frontend display layer.
 
 ### Peer Score Comparison
 "Firms like yours" comparison — anonymised percentile ranking by sector and firm size. Requires minimum data volume before it's statistically meaningful.
@@ -92,6 +99,12 @@ A verification programme allowing firms to display a Soterius trust badge based 
 ---
 
 ## Completed
+
+### Research Mode — 2026-06-13
+`POST /api/prospects/quick-scan` (find-or-create + scan in one call). `/research` frontend page: token-gated, sticky sector/location, auto-focus after each scan, session log.
+
+### Benchmarking Data Foundation — 2026-06-13
+`prospects` table (firm_name, website, sector, location, source, notes, last_scanned) with FK to `scans`. Admin `/api/prospects` route with full CRUD, scan trigger, and `/benchmarks` aggregation. `executeScan` extracted into `scanService.js`. Four new migrations.
 
 ### Score History, Trend Analysis, Change Detection — 2026-06-13
 Business Headline + Score History panel + Category Trends bar chart + check-level Change Detection. All visible before gate. First-scan notice for baseline scans. History fetch is async and degrades gracefully on failure.

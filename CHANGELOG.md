@@ -4,6 +4,91 @@
 
 ## 2026-06-13
 
+### Research Mode — Internal Benchmark Scanning
+
+**Changes:**
+- **`POST /api/prospects/quick-scan`** — new single-call endpoint: find-or-create prospect by website, run full scan, persist with `prospect_id`, update `last_scanned`, return result. No gate form required. Returns `created: true/false` to indicate whether a new prospect was created.
+- **`findOrCreateProspect`** — new database function; looks up prospect by `website`, creates if not found (firm_name defaults to domain if omitted)
+- **`/research` frontend page** — admin-token gated research scanner:
+  - Token entry screen on first visit; token stored in `localStorage`
+  - Form: website (required, auto-focused), firm name, sector (dropdown, sticky), location (sticky), source
+  - Sector and location persist between scans for efficient batch scanning of similar firms
+  - After each scan: website and firm name clear, focus returns to website field automatically
+  - Result panel: 0–999 score, risk band, category scores, FAIL checks listed
+  - Session log: running table of all scans done in the current session (up to 50)
+  - Session counter in header
+  - Sign-out clears stored token
+- Public scan workflow unchanged — `/results` and gate form unaffected
+
+**Files Created:**
+- `frontend/src/pages/Research.jsx`
+
+**Files Modified:**
+- `backend/services/database.js` — `findOrCreateProspect` added; `module.exports` updated
+- `backend/routes/prospects.js` — `POST /quick-scan` added (before `/:id` routes); `findOrCreateProspect` imported
+- `frontend/src/services/api.js` — `quickScan(token, payload)` added
+- `frontend/src/App.jsx` — `/research` route registered
+
+**Database Changes:**
+- None — uses existing `prospects` and `scans` tables
+
+---
+
+### Calibration Workflow
+
+**Changes:**
+- Created `CALIBRATION.md` — authoritative document for the market calibration programme
+- Defines the end-to-end workflow: add prospect → scan → record analyst notes → query benchmarks
+- Documents all data fields and how they map to `prospects` and `scans` tables
+- Six benchmark queries (exact SQL): avg score by sector, avg score by region, risk band distribution, most common failed checks, DMARC adoption rate, security header adoption rate
+- First 50 firms process: sector distribution (20 solicitors / 15 accountants / 10 advisers / 5 other), location mix, register sources, per-firm note format, anomaly flags, milestone checkpoints
+- Findings section template for post-collection analysis and credibility verdict framework
+- Success criteria checklist
+
+**Files Created:**
+- `CALIBRATION.md`
+
+**Files Modified:**
+- None — all implementation was done in the previous session (benchmarking data foundation)
+
+---
+
+### Benchmarking Data Foundation
+
+**Version:** Data Layer v1.1
+
+**Changes:**
+- **`prospects` table** — stores professional services firms for market calibration: `firm_name`, `website` (unique, lowercased), `sector`, `location`, `source`, `first_seen`, `last_scanned`, `notes`
+- **`prospect_id` FK on `scans`** — every scan record can be linked to a prospect; all historical scans remain valid with `prospect_id = NULL`
+- **`saveScan` updated** — accepts optional `prospectId` parameter; all existing callers unaffected (default `null`)
+- **`scanService.js` extracted** — `executeScan`, `getRiskLevel`, `getRiskBand`, `SCANNERS`, `MAX_POINTS` moved from `scan.js` into a shared service module; prevents code duplication between the public scan route and the admin prospects route
+- **`/api/prospects` route** — full admin-only CRUD and scan trigger, protected by `X-Admin-Token`:
+  - `GET /api/prospects/benchmarks` — aggregated stats: avg/min/max score by sector, by location, risk band distribution, top 20 most commonly failed checks
+  - `GET /api/prospects` — list all prospects (ordered: unscanned first, then least recently scanned); optional `?sector=`, `?location=`, `?source=` filters
+  - `POST /api/prospects` — create a prospect; website normalised to bare domain; returns 409 on duplicate
+  - `GET /api/prospects/:id` — single prospect + its full scan history
+  - `PATCH /api/prospects/:id` — update `firm_name`, `sector`, `location`, `source`, `notes`; `website` not patchable
+  - `POST /api/prospects/:id/scan` — triggers full 5-scanner scan, persists with `prospect_id` set, updates `last_scanned` on prospect
+
+**Files Created:**
+- `backend/db/migrations/003_create_prospects_table.sql`
+- `backend/db/migrations/004_add_prospect_id_to_scans.sql`
+- `backend/services/scanService.js`
+- `backend/routes/prospects.js`
+
+**Files Modified:**
+- `backend/services/database.js` — `saveScan` gains optional `prospectId`; six prospect functions added; `module.exports` updated
+- `backend/routes/scan.js` — imports `executeScan`, `getRiskLevel`, `MAX_POINTS` from `scanService`; scan logic removed (no duplication)
+- `backend/server.js` — `prospectsRouter` registered at `/api/prospects`
+
+**Database Changes:**
+- New `prospects` table (run `db/migrations/003_create_prospects_table.sql` in Supabase)
+- `prospect_id` UUID FK added to `scans` (run `db/migrations/004_add_prospect_id_to_scans.sql`)
+
+---
+
+## 2026-06-13
+
 ### Score History, Trend Analysis, and Change Detection
 
 **Version:** UX v1.0

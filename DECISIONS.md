@@ -6,6 +6,74 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D020 — Research Mode implemented as a single quick-scan endpoint + frontend page
+
+**Decision:** Research Mode is implemented as `POST /api/prospects/quick-scan` (find-or-create prospect + scan in one call) plus a `/research` frontend page. The existing public scan workflow and gate form are not modified.
+
+**Reason:** The existing `POST /api/prospects` + `POST /api/prospects/:id/scan` two-call flow was sufficient for occasional manual use but created unnecessary friction for scanning 250 firms. A single endpoint that handles upsert-and-scan removes that friction without changing any public-facing behaviour. The frontend page is optimised for batch use: sticky sector/location fields, auto-clear and auto-focus after each scan, session log.
+
+**Impact:** The `/research` route is not linked from the public app. Access requires the `ADMIN_TOKEN` to be entered on first visit (stored in localStorage). No schema changes — uses existing `prospects` and `scans` tables.
+
+---
+
+### D019 — Transition from Foundation Phase to Benchmark Phase
+
+**Decision:** Foundation Phase is declared complete. The company transitions to Benchmark Phase with immediate effect. All effort is directed toward building the first proprietary benchmark dataset.
+
+**Reason:** Core platform, scoring, reporting, historical storage, and calibration framework are now complete. The platform can scan domains, produce Security Ratings, store permanent scan records, compare historical results, and link scans to prospect firms. There is no further infrastructure required to begin market data collection. The focus now shifts from building to validating — collecting market intelligence, stress-testing the scoring model against real firms, and establishing the commercial evidence base.
+
+**Foundation Phase deliverables (complete):**
+- Security Rating v1.0 — five-band, 0–999 scale, DMARC/CVE graduated scoring
+- PDF report generation
+- Permanent scan history storage
+- Score history, trend analysis, and change detection UI
+- Prospects table and benchmarking data model
+- Calibration workflow and benchmark SQL queries
+- All documentation (BOARD.md, SCORING.md, ARCHITECTURE.md, VISION.md, ROADMAP.md, DECISIONS.md, CALIBRATION.md)
+
+**Benchmark Phase objective:** 250 professional services firms scanned, sector benchmarks established, credibility verdict recorded.
+
+**Impact:** No new infrastructure features until Benchmark Phase success criteria are met. Board decision recorded in BOARD.md.
+
+---
+
+### D018 — Benchmark-first validation strategy
+
+**Decision:** Before expanding product functionality, Soterius will build a proprietary benchmark dataset by scanning 250 UK professional services firms. No new product features will be prioritised until benchmark data is established and a credibility verdict is recorded.
+
+**Reason:** Security Rating v1.0 was built against a theoretical model. Without real-world data, all commercial claims about the rating — sector benchmarks, risk distributions, typical scores — are unverifiable. Benchmark data is required to validate the model, inform the marketing proposition, and provide the evidence base for monitoring and trust-mark features.
+
+**Expected outcomes:**
+- Benchmark statistics (avg score by sector, risk band distribution, DMARC adoption, header adoption)
+- Marketing insights into the real security posture of professional services firms
+- Product validation — or identification of areas requiring recalibration
+- Data foundation for future Digital Trust Mark eligibility thresholds
+- Evidence base for the monitoring value proposition
+
+**Impact:** All feature development deferred until 250 firms are scanned and findings are documented in CALIBRATION.md. This decision supersedes D015 (50-firm target) — target is now 250 firms. Board approval recorded in BOARD.md.
+
+---
+
+### D017 — Calibration process defined before any benchmark features are built
+
+**Decision:** A formal calibration process is defined in `CALIBRATION.md` before any benchmarking UI, monitoring features, or trust-mark tiers are built. The process requires 50 firms scanned across at least 3 sectors, with analyst notes and a credibility verdict before Phase 2 begins.
+
+**Reason:** Without real-world validation, any threshold or benchmark figure is arbitrary. If the scoring model systematically over-scores or under-scores a sector, every downstream feature (monitoring alerts, benchmarking displays, badge eligibility thresholds) will inherit the problem. 50 firms is the minimum for meaningful sector-level distributions.
+
+**Impact:** Feature development on Phase 2 (monitoring subscriptions, Admin Dashboard) is deferred until calibration is complete and a credibility verdict is recorded in `CALIBRATION.md`. Any scoring adjustment identified during calibration requires a new `scoringVersion`, a SCORING.md update, and a new DECISIONS.md entry.
+
+---
+
+### D016 — Benchmarking data stored in a `prospects` table linked to `scans` via FK
+
+**Decision:** Market calibration data is stored in a dedicated `prospects` table. Each prospect has a stable `id`. The `scans` table gains a nullable `prospect_id` FK so every automated scan is linked to its source firm. Prospect management and benchmark aggregation are exposed via admin-only `/api/prospects` endpoints.
+
+**Reason:** Flat scan records do not carry sector or firm metadata — they are domain-centric, not firm-centric. Without a `prospects` table, benchmarking queries (average score by sector, most common failed checks, regional breakdown) would require parsing domain names back to firms, which is error-prone and impossible to enrich. A separate table with a FK lets the system join firm context onto scan history cleanly, and allows one firm to accumulate many scan records over time.
+
+**Impact:** `saveScan` gains an optional `prospectId` parameter; all existing callers (public scan route) pass `null` by default — no breaking change. The `prospect_id` column is nullable on `scans`, so all historical records remain valid. Scan logic extracted into `scanService.js` so it is shared between the public scan route and the admin prospects route without circular imports.
+
+---
+
 ### D015 — Market calibration takes priority over new feature development
 **Decision:** All new feature development is paused. The immediate priority is Market Calibration & Score Validation — scanning 50 real professional services firms, assessing score credibility, and documenting findings in CALIBRATION.md.
 
