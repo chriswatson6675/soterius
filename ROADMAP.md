@@ -12,7 +12,25 @@ This repository is the single source of truth for all product and technical deci
 
 ## Now
 
-Nothing in active development.
+### Market Calibration & Score Validation ← current priority
+
+Validate Security Rating v1.0 against real-world professional services firms before continuing feature development.
+
+**Objective:** Confirm that the Security Rating model produces commercially credible results across a representative sample of the target market.
+
+**Tasks:**
+- [ ] Scan 50 professional services firms (solicitors, accountants, financial advisers)
+- [ ] Record scores and risk bands for each firm
+- [ ] Assess whether results feel credible — are scores too harsh, too generous, or well-calibrated?
+- [ ] Identify any scoring anomalies or unexpected outcomes
+- [ ] Establish preliminary benchmark ranges by sector and firm size
+- [ ] Document all findings in `CALIBRATION.md`
+
+**Success criteria:** A representative sample has been analysed and the Security Rating model is considered commercially credible. Findings documented in CALIBRATION.md.
+
+**Why this comes first:** Feature development on top of an uncalibrated model risks building the wrong thing. Market credibility must be established before investing in monitoring, benchmarking, or trust-mark tiers.
+
+---
 
 **Pending prerequisite (manual action required):**
 - Run Supabase migrations to activate scan history:

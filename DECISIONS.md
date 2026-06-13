@@ -6,6 +6,15 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D015 — Market calibration takes priority over new feature development
+**Decision:** All new feature development is paused. The immediate priority is Market Calibration & Score Validation — scanning 50 real professional services firms, assessing score credibility, and documenting findings in CALIBRATION.md.
+
+**Reason:** Security Rating v1.0 has been built against a theoretical model. Before investing further in monitoring, benchmarking, or trust-mark tiers, the model must be validated against real-world data. Building on top of an uncalibrated rating risks investing in the wrong direction — if scores are systematically too harsh or too generous, every downstream feature (monitoring thresholds, benchmarking, badge eligibility) will inherit the problem.
+
+**Impact:** Monitoring Subscription and Admin Dashboard (both in Next) are deferred until calibration is complete. Findings may inform minor scoring adjustments — any such changes require a new `scoringVersion` string, an update to SCORING.md, and a DECISIONS.md entry. The calibration output lives in CALIBRATION.md.
+
+---
+
 ### D014 — Strategic intent to explore a Digital Trust Mark programme
 **Decision:** Soterius will explore a Digital Trust Mark verification programme as a future capability, to be considered once Security Rating (Phase 1), Monitoring (Phase 2), and Benchmarking (Phase 3) are established and validated in market.
 
