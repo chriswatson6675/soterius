@@ -6,6 +6,7 @@ Board-level record of major decisions and approvals. Operational decisions are i
 
 | Date | Decision | Owner | Status |
 |---|---|---|---|
+| 2026-06-13 | Benchmark Cohort 001 — Initial Analysis Complete | CEO | Active |
 | 2026-06-13 | Benchmark Cohort 001 approved — North Wales Solicitor Benchmark, 71 firms | CEO | Active |
 | 2026-06-13 | Phase transition — Foundation Phase complete, Benchmark Phase active | CEO | Active |
 | 2026-06-13 | Build first Soterius benchmark dataset — 250 professional services firms | CEO | Active |
@@ -20,6 +21,28 @@ Board-level record of major decisions and approvals. Operational decisions are i
 ---
 
 ## Decision Detail
+
+### 2026-06-13 — Benchmark Cohort 001: Initial Analysis Complete
+
+**Status:** Active — data collection ongoing
+
+**Milestone:** Initial analysis complete on Benchmark Cohort 001 (North Wales Solicitor Benchmark).
+
+**Approximate risk distribution (initial analysis):**
+
+| Risk Band | % of Firms |
+|---|---|
+| Critical Risk | 28% |
+| High Risk | 50% |
+| Moderate Risk | 13% |
+| Good | 4% |
+| Excellent | 2% |
+
+**Key observation:** Approximately 78% of firms fell into High Risk or Critical Risk categories. The scoring model demonstrated meaningful separation between firms.
+
+**Conclusion:** Security Rating v1.0 methodology retained. Initial results indicate the model produces realistic score differentiation and commercially credible outcomes. Full assessment to follow after 250 firms have been analysed.
+
+---
 
 ### 2026-06-13 — Benchmark Cohort 001: North Wales Solicitor Benchmark
 

@@ -6,6 +6,16 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D022 — Retain Security Rating v1.0 methodology following initial benchmark analysis
+
+**Decision:** Security Rating v1.0 methodology is retained without modification.
+
+**Reason:** Initial benchmark analysis of Benchmark Cohort 001 (North Wales solicitors) indicates the model produces realistic score differentiation and commercially credible outcomes. Approximately 78% of firms fell into High Risk or Critical Risk categories, with meaningful separation across all five bands. This is consistent with expectations for a sector with limited dedicated IT resource and no regulatory mandate for specific technical security controls.
+
+**Future action:** Continue collecting benchmark data. Reassess methodology after 250 firms have been analysed. Any future adjustment requires a new `scoringVersion`, update to SCORING.md, and a new DECISIONS.md entry.
+
+---
+
 ### D021 — Complete regional cohort over sample-based pilot
 
 **Decision:** Benchmark Cohort 001 will scan all 71 solicitor firms within 25 miles of LL30 2UB rather than a sample subset.
