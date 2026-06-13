@@ -11,14 +11,18 @@ const IT_MGMT_OPT = ['In-house', 'Outsourced', 'Hybrid', 'No formal process'];
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getRiskKey(score) {
-  if (score >= 80) return 'low';
-  if (score >= 60) return 'medium';
+  if (score >= 90) return 'excellent';
+  if (score >= 75) return 'good';
+  if (score >= 60) return 'moderate';
+  if (score >= 40) return 'high';
   return 'critical';
 }
 
 function getRiskLabel(score) {
-  if (score >= 80) return 'Low Risk';
-  if (score >= 60) return 'Medium Risk';
+  if (score >= 90) return 'Excellent';
+  if (score >= 75) return 'Good';
+  if (score >= 60) return 'Moderate Risk';
+  if (score >= 40) return 'High Risk';
   return 'Critical Risk';
 }
 
@@ -156,7 +160,7 @@ function ScoreGauge({ score }) {
   const dotColor = gradFrac <= 0.5
     ? lerpHex('#dc2626', '#f59e0b', gradFrac / 0.5)
     : lerpHex('#f59e0b', '#10b981', (gradFrac - 0.5) / 0.5);
-  const textColor = score >= 80 ? '#10b981' : score >= 50 ? '#f59e0b' : '#dc2626';
+  const textColor = score >= 90 ? '#15803d' : score >= 75 ? '#16a34a' : score >= 60 ? '#d97706' : score >= 40 ? '#ea580c' : '#dc2626';
 
   return (
     <svg
@@ -202,8 +206,8 @@ function ScoreGauge({ score }) {
       </text>
 
       {/* Zone end-labels */}
-      <text x={20} y={124} fontSize="9" fontWeight="600" fill="#dc2626" fontFamily="inherit">HIGH RISK</text>
-      <text x={180} y={124} fontSize="9" fontWeight="600" fill="#10b981" fontFamily="inherit" textAnchor="end">LOW RISK</text>
+      <text x={20} y={124} fontSize="9" fontWeight="600" fill="#dc2626" fontFamily="inherit">CRITICAL</text>
+      <text x={180} y={124} fontSize="9" fontWeight="600" fill="#15803d" fontFamily="inherit" textAnchor="end">EXCELLENT</text>
     </svg>
   );
 }
@@ -460,6 +464,7 @@ function ResultsView({ data, onBack }) {
         scanners:     data.scanners,
         overallScore: score,
         riskLevel:    getRiskKey(score),
+        scoreObject:  data.scoreObject,
       });
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
@@ -759,10 +764,11 @@ const css = `
     font-size: 12px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .rp-risk-low      { color: var(--color-success); background: rgba(22,163,74,0.12); }
-  .rp-risk-medium   { color: #ca8a04;              background: rgba(202,138,4,0.12); }
-  .rp-risk-high     { color: #ea580c;              background: rgba(234,88,12,0.12); }
-  .rp-risk-critical { color: var(--color-danger);  background: rgba(220,38,38,0.12); }
+  .rp-risk-excellent { color: #15803d;              background: rgba(21,128,61,0.12); }
+  .rp-risk-good      { color: var(--color-success); background: rgba(22,163,74,0.12); }
+  .rp-risk-moderate  { color: #d97706;              background: rgba(217,119,6,0.12); }
+  .rp-risk-high      { color: #ea580c;              background: rgba(234,88,12,0.12); }
+  .rp-risk-critical  { color: var(--color-danger);  background: rgba(220,38,38,0.12); }
   .rp-issue-summary { font-size: 15px; color: var(--color-text-muted); line-height: 1.4; }
 
   /* ── PDF download row ────────────────────────────────────── */
