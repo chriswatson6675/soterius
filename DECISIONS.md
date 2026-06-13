@@ -6,6 +6,15 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D012 — Three-phase product evolution: Rating → Monitoring → Risk Management
+**Decision:** Soterius evolves in three defined phases: Phase 1 (Security Rating), Phase 2 (Security Rating + Monitoring), Phase 3 (Digital Risk Management). Documented in VISION.md as the authoritative strategic reference.
+
+**Reason:** Without a defined arc, feature decisions lack direction and individual features feel disconnected. The three phases create a coherent narrative — each phase produces standalone value while laying the foundation for the next. Phase 1 is complete. Phase 2 (monitoring subscriptions, trend data) is the immediate priority.
+
+**Impact:** Every feature should be evaluated against the current phase objective. Features that belong to Phase 3 (benchmarking, regulatory evidence packs, peer comparison) should not be built until Phase 2 is validated. ROADMAP.md now references VISION.md for phase definitions.
+
+---
+
 ### D011 — History sections visible before the gate
 **Decision:** Business Headline, Score History, Category Trends, and Change Detection are all rendered without requiring gate submission.
 

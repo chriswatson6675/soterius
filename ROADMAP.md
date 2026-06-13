@@ -1,5 +1,13 @@
 # Soterius Roadmap
 
+Strategic direction and phase definitions are documented in [VISION.md](VISION.md).
+
+| Phase | Name | Status |
+|---|---|---|
+| 1 | Security Rating | ✅ Complete |
+| 2 | Security Rating + Monitoring | 🔄 In Progress |
+| 3 | Digital Risk Management | Planned |
+
 ---
 
 ## Now
