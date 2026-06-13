@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { quickScan } from '../services/api';
+import { quickScan, deleteProspect } from '../services/api';
 
 const SECTORS = ['', 'solicitors', 'accountants', 'financial-advisers', 'surveyors', 'other'];
 const SOURCES = ['manual', 'sra-register', 'icaew-register', 'fca-register'];
@@ -99,13 +99,24 @@ function ResultPanel({ result }) {
           ))}
         </div>
       )}
+
+      {onDelete && (
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid #e2e8f0' }}>
+          <button
+            onClick={onDelete}
+            style={{ fontSize: 12, color: '#dc2626', background: 'none', border: '1px solid #fecaca', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}
+          >
+            Delete this scan
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Session log ───────────────────────────────────────────────────────────────
 
-function SessionLog({ scans }) {
+function SessionLog({ scans, onDelete }) {
   if (!scans.length) return null;
   return (
     <div style={{ marginTop: 32 }}>
@@ -117,7 +128,8 @@ function SessionLog({ scans }) {
           <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
             <th style={{ textAlign: 'left', padding: '4px 8px 8px 0', fontWeight: 600, color: '#64748b' }}>Domain</th>
             <th style={{ textAlign: 'right', padding: '4px 8px 8px', fontWeight: 600, color: '#64748b' }}>Score</th>
-            <th style={{ textAlign: 'left', padding: '4px 0 8px 8px', fontWeight: 600, color: '#64748b' }}>Band</th>
+            <th style={{ textAlign: 'left', padding: '4px 8px 8px', fontWeight: 600, color: '#64748b' }}>Band</th>
+            <th style={{ padding: '4px 0 8px', fontWeight: 600, color: '#64748b' }} />
           </tr>
         </thead>
         <tbody>
@@ -127,7 +139,15 @@ function SessionLog({ scans }) {
               <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <td style={{ padding: '7px 8px 7px 0', color: '#0f2540' }}>{s.domain}</td>
                 <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color }}>{ratingFromPct(s.score)}</td>
-                <td style={{ padding: '7px 0 7px 8px', color }}>{s.riskLevel}</td>
+                <td style={{ padding: '7px 8px', color }}>{s.riskLevel}</td>
+                <td style={{ padding: '7px 0', textAlign: 'right' }}>
+                  <button
+                    onClick={() => onDelete(s.prospectId, i)}
+                    style={{ fontSize: 11, color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             );
           })}
@@ -147,6 +167,19 @@ export default function Research() {
   const [error, setError]           = useState('');
   const [sessionScans, setSession]  = useState([]);
   const websiteRef = useRef(null);
+
+  async function handleDelete(prospectId, sessionIndex) {
+    if (!prospectId) return;
+    try {
+      await deleteProspect(token, prospectId);
+      if (sessionIndex !== undefined) {
+        setSession(prev => prev.filter((_, i) => i !== sessionIndex));
+      }
+      if (result?.prospectId === prospectId) setResult(null);
+    } catch (err) {
+      alert(`Delete failed: ${err.message}`);
+    }
+  }
 
   useEffect(() => {
     if (token) setTimeout(() => websiteRef.current?.focus(), 50);
@@ -304,10 +337,12 @@ export default function Research() {
         )}
 
         {/* Result */}
-        {result && phase === 'done' && <ResultPanel result={result} />}
+        {result && phase === 'done' && (
+          <ResultPanel result={result} onDelete={() => handleDelete(result.prospectId)} />
+        )}
 
         {/* Session log */}
-        <SessionLog scans={sessionScans} />
+        <SessionLog scans={sessionScans} onDelete={handleDelete} />
 
       </div>
     </div>
