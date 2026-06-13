@@ -1,6 +1,6 @@
 # Soterius Roadmap
 
-Strategic direction and phase definitions are documented in [VISION.md](VISION.md).
+This repository is the single source of truth for all product and technical decisions. See also: [VISION.md](VISION.md) · [SCORING.md](SCORING.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [DECISIONS.md](DECISIONS.md) · [BOARD.md](BOARD.md)
 
 | Phase | Name | Status |
 |---|---|---|

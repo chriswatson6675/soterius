@@ -6,6 +6,15 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D013 — Repository as single source of truth for all decisions
+**Decision:** The Soterius repository is the authoritative source for all product, scoring, architecture, and business decisions. Six structured documentation files are maintained: BOARD.md (board approvals), SCORING.md (scoring methodology), ARCHITECTURE.md (technical architecture), ROADMAP.md (roadmap), DECISIONS.md (operational decisions), VISION.md (strategic direction), CHANGELOG.md (change history).
+
+**Reason:** As the platform grows, decisions made in conversations, emails, or meetings become inaccessible to future contributors. A repository-based record ensures every decision is traceable, version-controlled, and auditable.
+
+**Impact:** After every feature implementation or significant decision, the relevant files must be updated as part of the same commit. This file (DECISIONS.md) captures the "why" that is not derivable from reading the code.
+
+---
+
 ### D012 — Three-phase product evolution: Rating → Monitoring → Risk Management
 **Decision:** Soterius evolves in three defined phases: Phase 1 (Security Rating), Phase 2 (Security Rating + Monitoring), Phase 3 (Digital Risk Management). Documented in VISION.md as the authoritative strategic reference.
 
