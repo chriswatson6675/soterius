@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { scanDomain, submitGate, downloadReport } from '../services/api';
+import { scanDomain, submitGate, downloadReport, getScanHistory } from '../services/api';
 import ScannerCard from '../components/ScannerCard';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -36,6 +36,62 @@ function formatDate(iso) {
     return '';
   }
 }
+
+function riskBandRank(band) {
+  const order = ['Critical Risk', 'High Risk', 'Moderate Risk', 'Good', 'Excellent'];
+  const i = order.indexOf(band);
+  return i === -1 ? 0 : i;
+}
+
+function scoreColor(pct) {
+  if (pct >= 90) return '#15803d';
+  if (pct >= 75) return '#16a34a';
+  if (pct >= 60) return '#d97706';
+  if (pct >= 40) return '#ea580c';
+  return '#dc2626';
+}
+
+function scoreBarColor(pct) {
+  if (pct >= 75) return '#16a34a';
+  if (pct >= 60) return '#d97706';
+  return '#dc2626';
+}
+
+function detectChanges(currentScanners, previousScanners) {
+  function buildMap(scanners) {
+    const map = {};
+    (scanners || []).forEach(s => {
+      (s.checks || []).forEach(c => {
+        if (c.name) map[c.name] = { status: String(c.status || '').toUpperCase(), category: s.name };
+      });
+    });
+    return map;
+  }
+  const curr = buildMap(currentScanners);
+  const prev = buildMap(previousScanners);
+  const resolved = [], newIssues = [], improved = [], deteriorated = [];
+  for (const [name, c] of Object.entries(curr)) {
+    const p = prev[name];
+    if (!p) {
+      if (c.status === 'FAIL' || c.status === 'WARNING') newIssues.push({ name, status: c.status, category: c.category });
+      continue;
+    }
+    if (p.status === c.status) continue;
+    if (p.status !== 'PASS' && c.status === 'PASS')    { resolved.push({ name, category: c.category, prevStatus: p.status }); continue; }
+    if (p.status === 'FAIL'  && c.status === 'WARNING') { improved.push({ name, category: c.category }); continue; }
+    if (p.status === 'PASS'  && c.status !== 'PASS')    { newIssues.push({ name, status: c.status, category: c.category, prevStatus: p.status }); continue; }
+    if (p.status === 'WARNING' && c.status === 'FAIL')  { deteriorated.push({ name, category: c.category }); }
+  }
+  return { resolved, newIssues, improved, deteriorated };
+}
+
+const CAT_DISPLAY = {
+  ssl:      'SSL/TLS Encryption',
+  email:    'Email Security',
+  headers:  'Security Headers',
+  vulnComp: 'Vulnerable Components',
+  gdpr:     'GDPR / Cookie Compliance',
+};
 
 // ─── Shared layout ────────────────────────────────────────────────────────────
 
@@ -231,6 +287,194 @@ function ScoreCard({ score, scanners }) {
       <div className="rp-score-info">
         <span className={`rp-risk-badge rp-risk-${riskKey}`} role="status">{riskLabel}</span>
         <p className="rp-issue-summary">{summary}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Business Headline ────────────────────────────────────────────────────────
+
+function BusinessHeadline({ current, previous, changes }) {
+  const diff = current.score - previous.overall_score;
+  const currBand = current.riskLevel;
+  const prevBand = previous.risk_band;
+  const bandChanged = currBand !== prevBand;
+  const tone = diff > 0 ? 'pos' : diff < 0 ? 'neg' : 'neutral';
+  const leadIcon = diff > 0 ? '▲' : diff < 0 ? '▼' : '→';
+
+  const lines = [];
+  if (diff !== 0) {
+    const abs = Math.abs(diff);
+    lines.push(`Security Rating ${diff > 0 ? 'improved' : 'declined'} by ${abs} point${abs !== 1 ? 's' : ''} since your last scan.`);
+  } else {
+    lines.push('Security Rating unchanged since your last scan.');
+  }
+  if (bandChanged) {
+    const improved = riskBandRank(currBand) > riskBandRank(prevBand);
+    lines.push(`Risk rating ${improved ? 'improved' : 'declined'} from ${prevBand} to ${currBand}.`);
+  }
+  if (changes.resolved.length > 0) {
+    const n = changes.resolved.length;
+    lines.push(`${n} previously identified risk${n !== 1 ? 's have' : ' has'} been resolved.`);
+  }
+  if (changes.newIssues.length > 0) {
+    const n = changes.newIssues.length;
+    lines.push(`${n} new issue${n !== 1 ? 's have' : ' has'} been detected.`);
+  }
+
+  return (
+    <div className={`rp-headline rp-headline-${tone}`} role="region" aria-label="Score summary">
+      <span className="rp-headline-icon" aria-hidden="true">{leadIcon}</span>
+      <ul className="rp-headline-list">
+        {lines.map((l, i) => <li key={i}>{l}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+// ─── Score History ────────────────────────────────────────────────────────────
+
+function ScoreHistory({ current, previous }) {
+  const curr = current.score;
+  const prev = previous.overall_score;
+  const diff = curr - prev;
+  const tone = diff > 0 ? 'pos' : diff < 0 ? 'neg' : 'neutral';
+
+  return (
+    <div className="rp-hist-card" role="region" aria-label="Score history">
+      <h2 className="rp-section-title">Score History</h2>
+      <div className="rp-hist-cols">
+        <div className="rp-hist-col">
+          <span className="rp-hist-lbl">Current Score</span>
+          <span className="rp-hist-num" style={{ color: scoreColor(curr) }}>{curr}%</span>
+          <span className={`rp-risk-badge rp-risk-${getRiskKey(curr)}`}>{getRiskLabel(curr)}</span>
+          <span className="rp-hist-date">{formatDate(current.scannedAt)}</span>
+        </div>
+        <div className="rp-hist-sep" aria-hidden="true">vs</div>
+        <div className="rp-hist-col">
+          <span className="rp-hist-lbl">Previous Score</span>
+          <span className="rp-hist-num" style={{ color: scoreColor(prev) }}>{prev}%</span>
+          <span className={`rp-risk-badge rp-risk-${getRiskKey(prev)}`}>{getRiskLabel(prev)}</span>
+          <span className="rp-hist-date">{formatDate(previous.scanned_at)}</span>
+        </div>
+        <div className={`rp-hist-col rp-hist-change-col rp-hist-${tone}`}>
+          <span className="rp-hist-lbl">Change</span>
+          <span className="rp-hist-diff">
+            {diff > 0 ? '+' : ''}{diff}{diff > 0 ? ' ▲' : diff < 0 ? ' ▼' : ' →'}
+          </span>
+          <span className="rp-hist-change-word">
+            {diff > 0 ? 'Improved' : diff < 0 ? 'Declined' : 'Unchanged'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Category Trends ──────────────────────────────────────────────────────────
+
+function TrendPanel({ current, previous }) {
+  const currBD = current.scoreObject?.categoryBreakdown || {};
+  const prevBD = previous.score_object?.categoryBreakdown || {};
+
+  const rows = Object.entries(CAT_DISPLAY).map(([key, name]) => {
+    const c = currBD[key];
+    const p = prevBD[key];
+    if (!c) return null;
+    const diff = p ? c.percentage - p.percentage : null;
+    return { key, name, pct: c.percentage, diff };
+  }).filter(Boolean);
+
+  const validDiffs = rows.map(r => r.diff).filter(d => d !== null);
+  const avg = validDiffs.length ? validDiffs.reduce((a, b) => a + b, 0) / validDiffs.length : 0;
+  const verdictKey = avg > 0.5 ? 'pos' : avg < -0.5 ? 'neg' : 'neutral';
+  const verdict    = avg > 0.5 ? 'Improving ▲' : avg < -0.5 ? 'Declining ▼' : 'Stable →';
+
+  return (
+    <div className="rp-trend-card" role="region" aria-label="Category trends">
+      <div className="rp-trend-hdr">
+        <h2 className="rp-section-title">Category Trends</h2>
+        <span className={`rp-trend-verdict rp-trend-verdict-${verdictKey}`}>{verdict}</span>
+      </div>
+      <div className="rp-trend-rows">
+        {rows.map(row => (
+          <div key={row.key} className="rp-trend-row">
+            <span className="rp-trend-name">{row.name}</span>
+            <div className="rp-trend-bar-track" aria-hidden="true">
+              <div
+                className="rp-trend-bar-fill"
+                style={{ width: `${row.pct}%`, background: scoreBarColor(row.pct) }}
+              />
+            </div>
+            <span className="rp-trend-pct">{row.pct}%</span>
+            {row.diff !== null && (
+              <span className={`rp-trend-diff rp-trend-diff-${row.diff > 0 ? 'pos' : row.diff < 0 ? 'neg' : 'neutral'}`}>
+                {row.diff > 0 ? '+' : ''}{row.diff}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Change Detection ─────────────────────────────────────────────────────────
+
+function ChangeGroup({ type, icon, label, items }) {
+  if (!items.length) return null;
+  return (
+    <div className={`rp-chg-group rp-chg-${type}`}>
+      <div className="rp-chg-hdr">
+        <span className="rp-chg-icon" aria-hidden="true">{icon}</span>
+        <span className="rp-chg-label">{label}</span>
+        <span className="rp-chg-count">{items.length}</span>
+      </div>
+      <ul className="rp-chg-items">
+        {items.map((item, i) => (
+          <li key={i} className="rp-chg-item">
+            <span className="rp-chg-item-name">{item.name}</span>
+            <span className="rp-chg-item-cat">{item.category}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ChangeDetection({ changes }) {
+  const { resolved, newIssues, improved, deteriorated } = changes;
+  const total = resolved.length + newIssues.length + improved.length + deteriorated.length;
+
+  return (
+    <div className="rp-chg-card" role="region" aria-label="What changed">
+      <h2 className="rp-section-title">What Changed</h2>
+      {total === 0 ? (
+        <p className="rp-chg-none">No individual check changes detected since your last scan.</p>
+      ) : (
+        <div className="rp-chg-groups">
+          <ChangeGroup type="resolved"     icon="✓" label="Resolved"     items={resolved}     />
+          <ChangeGroup type="improved"     icon="↑" label="Improved"     items={improved}     />
+          <ChangeGroup type="new"          icon="!" label="New Issues"   items={newIssues}    />
+          <ChangeGroup type="deteriorated" icon="↓" label="Deteriorated" items={deteriorated} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── First-scan notice ────────────────────────────────────────────────────────
+
+function FirstScanNotice() {
+  return (
+    <div className="rp-first-scan" role="status">
+      <span className="rp-first-scan-icon" aria-hidden="true">📊</span>
+      <div>
+        <p className="rp-first-scan-title">Baseline recorded</p>
+        <p className="rp-first-scan-desc">
+          This is the first scan for this domain. Scan again after making improvements
+          to track your Security Rating over time.
+        </p>
       </div>
     </div>
   );
@@ -446,9 +690,12 @@ function Toast({ message, onDismiss }) {
 
 // ─── Full results view ────────────────────────────────────────────────────────
 
-function ResultsView({ data, onBack }) {
+function ResultsView({ data, history, onBack }) {
   const score    = data.score;
   const scanDate = formatDate(data.scannedAt);
+
+  const prevScan = history.find(h => h.id !== data.scanId) || null;
+  const changes  = prevScan ? detectChanges(data.scanners, prevScan.scanner_results || []) : null;
 
   const [gateOpen,   setGateOpen]   = useState(false);
   const [gatePassed, setGatePassed] = useState(false);
@@ -511,6 +758,19 @@ function ResultsView({ data, onBack }) {
 
         {/* ── Score card — always visible ── */}
         <ScoreCard score={score} scanners={data.scanners || []} />
+
+        {/* ── History sections — visible to all, shown when previous scan exists ── */}
+        {prevScan && changes && (
+          <>
+            <BusinessHeadline current={data} previous={prevScan} changes={changes} />
+            <ScoreHistory current={data} previous={prevScan} />
+            <TrendPanel current={data} previous={prevScan} />
+            <ChangeDetection changes={changes} />
+          </>
+        )}
+        {!prevScan && history.length > 0 && (
+          <FirstScanNotice />
+        )}
 
         {/* ── PDF download — visible after gate ── */}
         {gatePassed && (
@@ -624,6 +884,7 @@ export default function Results() {
 
   const [phase,      setPhase]      = useState('loading');
   const [data,       setData]       = useState(null);
+  const [history,    setHistory]    = useState([]);
   const [errMsg,     setErrMsg]     = useState('');
   const [retryCount, setRetryCount] = useState(0);
 
@@ -631,9 +892,19 @@ export default function Results() {
     if (!domain?.trim()) { navigate('/'); return; }
     setPhase('loading');
     setErrMsg('');
+    setHistory([]);
     scanDomain(domain)
-      .then(result => { setData(result); setPhase('ready'); })
-      .catch(err   => { setErrMsg(err.message); setPhase('error'); });
+      .then(async result => {
+        setData(result);
+        try {
+          const h = await getScanHistory(domain, 20);
+          setHistory(h.history || []);
+        } catch {
+          // history unavailable — degrade gracefully, history stays []
+        }
+        setPhase('ready');
+      })
+      .catch(err => { setErrMsg(err.message); setPhase('error'); });
   }, [domain, retryCount, navigate]);
 
   if (phase === 'loading') return <Loading domain={domain} />;
@@ -645,7 +916,7 @@ export default function Results() {
       autoRetry={errMsg.includes('Cannot connect')}
     />
   );
-  return <ResultsView data={data} onBack={() => navigate('/')} />;
+  return <ResultsView data={data} history={history} onBack={() => navigate('/')} />;
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
@@ -1057,4 +1328,165 @@ const css = `
     .rp-confidence   { gap: 6px; }
     .rp-conf-opt     { width: 36px; }
   }
+
+  /* ── Section titles ──────────────────────────────────────────── */
+  .rp-section-title {
+    font-size: 15px; font-weight: 600;
+    color: var(--color-text); margin-bottom: 14px;
+  }
+
+  /* ── Business headline ───────────────────────────────────────── */
+  .rp-headline {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    margin-bottom: 16px;
+  }
+  .rp-headline-pos     { border-color: #16a34a; background: rgba(22,163,74,0.07); }
+  .rp-headline-neg     { border-color: #dc2626; background: rgba(220,38,38,0.07); }
+  .rp-headline-neutral { border-color: #6b7280; background: rgba(107,114,128,0.07); }
+  .rp-headline-icon    { font-size: 14px; font-weight: 700; flex-shrink: 0; line-height: 1.7; }
+  .rp-headline-pos .rp-headline-icon     { color: #16a34a; }
+  .rp-headline-neg .rp-headline-icon     { color: #dc2626; }
+  .rp-headline-neutral .rp-headline-icon { color: #6b7280; }
+  .rp-headline-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .rp-headline-list li { font-size: 14px; color: var(--color-text); line-height: 1.5; }
+  .rp-headline-list li:first-child { font-weight: 600; }
+
+  /* ── Score history card ──────────────────────────────────────── */
+  .rp-hist-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .rp-hist-cols {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .rp-hist-col { display: flex; flex-direction: column; gap: 6px; }
+  .rp-hist-change-col { text-align: right; }
+  .rp-hist-sep {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--color-text-muted);
+    align-self: center;
+  }
+  .rp-hist-lbl  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
+  .rp-hist-num  { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .rp-hist-date { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
+  .rp-hist-diff {
+    font-size: 26px; font-weight: 700; line-height: 1.1;
+  }
+  .rp-hist-change-word { font-size: 13px; font-weight: 600; }
+  .rp-hist-pos .rp-hist-diff, .rp-hist-pos .rp-hist-change-word     { color: #16a34a; }
+  .rp-hist-neg .rp-hist-diff, .rp-hist-neg .rp-hist-change-word     { color: #dc2626; }
+  .rp-hist-neutral .rp-hist-diff, .rp-hist-neutral .rp-hist-change-word { color: var(--color-text-muted); }
+  @media (max-width: 479px) {
+    .rp-hist-cols       { grid-template-columns: 1fr 1fr; }
+    .rp-hist-sep        { display: none; }
+    .rp-hist-change-col { text-align: left; grid-column: 1 / -1; border-top: 1px solid var(--color-border); padding-top: 12px; }
+  }
+
+  /* ── Category trends ─────────────────────────────────────────── */
+  .rp-trend-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .rp-trend-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .rp-trend-hdr .rp-section-title { margin-bottom: 0; }
+  .rp-trend-verdict {
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 99px; letter-spacing: 0.04em;
+  }
+  .rp-trend-verdict-pos     { color: #16a34a; background: rgba(22,163,74,0.1); }
+  .rp-trend-verdict-neg     { color: #dc2626; background: rgba(220,38,38,0.1); }
+  .rp-trend-verdict-neutral { color: #6b7280; background: rgba(107,114,128,0.1); }
+  .rp-trend-rows { display: flex; flex-direction: column; gap: 10px; }
+  .rp-trend-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 44px 52px;
+    gap: 10px;
+    align-items: center;
+  }
+  .rp-trend-name    { font-size: 13px; color: var(--color-text); }
+  .rp-trend-bar-track {
+    height: 8px; border-radius: 4px;
+    background: var(--color-border); overflow: hidden;
+  }
+  .rp-trend-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+  .rp-trend-pct  { font-size: 13px; font-weight: 600; color: var(--color-text); text-align: right; }
+  .rp-trend-diff { font-size: 12px; font-weight: 700; text-align: right; }
+  .rp-trend-diff-pos     { color: #16a34a; }
+  .rp-trend-diff-neg     { color: #dc2626; }
+  .rp-trend-diff-neutral { color: var(--color-text-muted); }
+  @media (max-width: 600px) {
+    .rp-trend-row { grid-template-columns: 1fr 44px 44px; }
+    .rp-trend-name { grid-column: 1 / -1; font-size: 12px; }
+    .rp-trend-bar-track { grid-column: 1 / 2; }
+  }
+
+  /* ── Change detection card ───────────────────────────────────── */
+  .rp-chg-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .rp-chg-none { font-size: 14px; color: var(--color-text-muted); }
+  .rp-chg-groups { display: flex; flex-direction: column; gap: 12px; }
+  .rp-chg-group  { border-radius: var(--radius-sm); padding: 12px 14px; }
+  .rp-chg-resolved     { background: rgba(22,163,74,0.06);  border: 1px solid rgba(22,163,74,0.2); }
+  .rp-chg-improved     { background: rgba(217,119,6,0.06);  border: 1px solid rgba(217,119,6,0.2); }
+  .rp-chg-new          { background: rgba(220,38,38,0.06);  border: 1px solid rgba(220,38,38,0.2); }
+  .rp-chg-deteriorated { background: rgba(234,88,12,0.06);  border: 1px solid rgba(234,88,12,0.2); }
+  .rp-chg-hdr { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+  .rp-chg-icon  { font-size: 13px; font-weight: 700; }
+  .rp-chg-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+  .rp-chg-count {
+    font-size: 11px; font-weight: 700;
+    padding: 1px 7px; border-radius: 99px; margin-left: auto;
+  }
+  .rp-chg-resolved .rp-chg-icon,     .rp-chg-resolved .rp-chg-label     { color: #16a34a; }
+  .rp-chg-resolved .rp-chg-count     { color: #16a34a; background: rgba(22,163,74,0.15); }
+  .rp-chg-improved .rp-chg-icon,     .rp-chg-improved .rp-chg-label     { color: #d97706; }
+  .rp-chg-improved .rp-chg-count     { color: #d97706; background: rgba(217,119,6,0.15); }
+  .rp-chg-new .rp-chg-icon,          .rp-chg-new .rp-chg-label          { color: #dc2626; }
+  .rp-chg-new .rp-chg-count          { color: #dc2626; background: rgba(220,38,38,0.15); }
+  .rp-chg-deteriorated .rp-chg-icon, .rp-chg-deteriorated .rp-chg-label { color: #ea580c; }
+  .rp-chg-deteriorated .rp-chg-count { color: #ea580c; background: rgba(234,88,12,0.15); }
+  .rp-chg-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .rp-chg-item {
+    display: flex; align-items: baseline; gap: 8px; font-size: 13px;
+  }
+  .rp-chg-item-name { color: var(--color-text); }
+  .rp-chg-item-cat  {
+    color: var(--color-text-muted); font-size: 12px;
+    margin-left: auto; flex-shrink: 0;
+  }
+
+  /* ── First scan notice ───────────────────────────────────────── */
+  .rp-first-scan {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .rp-first-scan-icon  { font-size: 22px; flex-shrink: 0; }
+  .rp-first-scan-title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 3px; }
+  .rp-first-scan-desc  { font-size: 13px; color: var(--color-text-muted); line-height: 1.5; }
 `;

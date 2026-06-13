@@ -25,6 +25,17 @@ export async function submitGate(payload) {
   }
 }
 
+export async function getScanHistory(domain, limit = 20) {
+  try {
+    const { data } = await api.get(`/api/scan/history/${encodeURIComponent(domain)}`, {
+      params: { limit },
+    });
+    return data;
+  } catch (err) {
+    throw new Error(handleError(err));
+  }
+}
+
 export async function downloadReport(payload) {
   try {
     const { data } = await api.post('/api/report', payload, {
