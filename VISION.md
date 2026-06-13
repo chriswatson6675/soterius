@@ -41,6 +41,9 @@ Firms can track their Security Rating over time. Score history, trend analysis, 
 ### Phase 3 — Digital Risk Management
 A comprehensive platform for ongoing risk governance. Industry benchmarking, peer comparison, regulatory evidence packs (SRA, FCA, ICO), and a managed service offering for firms that need expert remediation.
 
+### Future Capability — Digital Trust Verification
+A programme allowing firms to display a Soterius trust badge as evidence of their security posture. Eligibility is determined by Security Rating and maintained by continuous monitoring. Badge expiry is automatic if requirements are no longer met. Intended to create a visible, credible signal to clients, regulators, and counterparties that a firm takes digital security seriously.
+
 ---
 
 ## Target Customers

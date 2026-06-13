@@ -6,6 +6,15 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-13
 
+### D014 — Strategic intent to explore a Digital Trust Mark programme
+**Decision:** Soterius will explore a Digital Trust Mark verification programme as a future capability, to be considered once Security Rating (Phase 1), Monitoring (Phase 2), and Benchmarking (Phase 3) are established and validated in market.
+
+**Reason:** Professional services firms operate in trust-sensitive environments. A verifiable trust badge backed by continuous monitoring creates a commercial incentive for monitoring subscriptions, differentiates Soterius from point-in-time scanners, and gives firms a tangible external signal to show clients and regulators. The concept only has credibility if the underlying Rating and Monitoring products are mature — premature launch risks reputational damage if badge holders are later found to have poor posture.
+
+**Impact:** No implementation until Phase 2 is validated. Recorded in ROADMAP.md under Later. Potential tiers (Verified / Trusted / Secure+) are indicative only — thresholds and requirements to be determined with market data. Future design must address badge expiry, renewal, and revocation mechanics.
+
+---
+
 ### D013 — Repository as single source of truth for all decisions
 **Decision:** The Soterius repository is the authoritative source for all product, scoring, architecture, and business decisions. Six structured documentation files are maintained: BOARD.md (board approvals), SCORING.md (scoring methodology), ARCHITECTURE.md (technical architecture), ROADMAP.md (roadmap), DECISIONS.md (operational decisions), VISION.md (strategic direction), CHANGELOG.md (change history).
 

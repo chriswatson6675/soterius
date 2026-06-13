@@ -53,6 +53,24 @@ Productised version of monitoring subscriptions with a payment gate (Stripe). In
 ### White-label Reporting for IT Providers
 Allow IT managed service providers to run scans and brand the PDF report for their clients. Requires API key management and PDF template customisation.
 
+### Soterius Digital Trust Mark
+A verification programme allowing firms to display a Soterius trust badge based on Security Rating and continuous monitoring.
+
+**Concept:** Security Rating generates trust eligibility. Monitoring maintains it. The badge signals to clients, regulators, and counterparties that a firm actively manages and demonstrates its digital security posture.
+
+**Potential tiers:**
+- Soterius Verified — minimum Security Rating threshold met
+- Soterius Trusted — Verified + active monitoring subscription
+- Soterius Secure+ — Trusted + score above a higher threshold + regular rescanning
+
+**Requirements (to be defined in future phase):**
+- Minimum Security Rating threshold
+- Active continuous monitoring subscription
+- Regular automated rescanning
+- Automatic badge expiry if requirements are no longer met
+
+**Dependencies:** Requires Security Rating (Phase 1, complete), Monitoring (Phase 2), and sufficient scan volume to set meaningful thresholds. Not to be built until Phase 2 is validated in market.
+
 ---
 
 ## Completed
