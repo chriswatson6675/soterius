@@ -272,3 +272,113 @@ Security headers are the dominant finding class. All five header checks appear i
 **Owner:** CEO
 
 **Status:** Phase 1 complete. Phase 2 in active development.
+
+---
+
+# Strategic Questions Under Review
+
+Questions raised at board level that do not yet have a decision. Recorded here for visibility and future review. These are not decisions — they are open questions.
+
+---
+
+## SQ001 — What business is Soterius ultimately becoming?
+
+**Status:** Open
+
+**Raised:** 2026-06-14
+
+**Background:**
+
+During Benchmark Cohort 001 and subsequent commercial strategy reviews, it became clear that Soterius may contain multiple potential business models. The current platform can be viewed through four different lenses.
+
+---
+
+### Business A — Security Rating Platform
+
+Scan → Score → Report
+
+| Characteristic | Assessment |
+|---|---|
+| Route to market | Fastest |
+| Implementation complexity | Lowest |
+| Defensibility | Lowest |
+| Competitive market | Most competitive |
+
+A clearly defined product with an immediate commercial use case. The risk is that the scan-and-score model is replicable. Differentiation depends on execution quality, brand, and sector focus rather than structural moat.
+
+---
+
+### Business B — Benchmark Intelligence Platform
+
+Scan → Compare → Rank → Benchmark
+
+| Characteristic | Assessment |
+|---|---|
+| Data compounds over time | Yes — each scan adds to the asset |
+| Defensibility | Stronger — first-mover advantage in a defined sector |
+| Proprietary market intelligence | Yes — no competitor has this data |
+| Benchmark products | Sector reports, cohort comparisons, trend analysis |
+
+The benchmark dataset is a structural asset. A competitor entering the market cannot buy two years of scanned, validated, sector-specific data. The longer the dataset grows, the harder it is to replicate.
+
+---
+
+### Business C — Monitoring Platform
+
+Monitor → Alert → Track → Improve
+
+| Characteristic | Assessment |
+|---|---|
+| Revenue model | Recurring — monthly subscription |
+| Customer retention | High — ongoing relationship |
+| Client value | Continuous assurance, not a one-time report |
+| Trust mark maintenance | Natural fit — score must be maintained to hold certification |
+
+Monitoring converts a one-time transaction into an ongoing relationship. The commercial model is more predictable and the customer lifetime value is substantially higher than one-off services.
+
+---
+
+### Business D — Trust Certification Platform
+
+Assess → Verify → Monitor → Certify
+
+| Characteristic | Assessment |
+|---|---|
+| Strategic moat | Highest |
+| Long-term defensibility | Strongest |
+| Execution difficulty | Highest |
+| Requirements | Governance, evidence standards, market credibility, accreditation |
+
+If Soterius becomes the recognised certification authority for digital security in UK professional services, the moat is substantial. Certification businesses are rare, high-margin, and difficult to displace once established. The challenge is the credibility required to get there — which takes time, volume, and third-party validation.
+
+---
+
+### Observation
+
+These four businesses are not mutually exclusive. They may represent a natural progression:
+
+```
+Security Rating  →  Benchmark Intelligence  →  Monitoring  →  Trust Certification
+     (now)                (building)             (next)           (future)
+```
+
+The Security Rating may be the entry point rather than the destination.
+The benchmark dataset may become the most defensible strategic asset.
+The Trust Mark may ultimately be the highest-value product Soterius can offer.
+
+---
+
+### Board Question
+
+Which of these businesses should Soterius optimise for over the next 3–5 years?
+
+Optimising for Business A (Security Rating) means prioritising volume, simplicity, and speed. Optimising for Business D (Trust Certification) means prioritising credibility, standards, and governance — at the cost of near-term speed.
+
+The answer may determine hiring priorities, product sequencing, pricing strategy, and partnership decisions.
+
+**This question remains open.** It should be revisited after:
+
+- Benchmark expansion (250+ firms scanned)
+- Market validation (first commercial revenue from Offers 1, 2, and 3)
+- Digital Trust Framework design (D027)
+- Initial commercial traction (conversion rates, subscription retention, customer feedback)
