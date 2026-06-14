@@ -6,6 +6,21 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-14
 
+### D025 — Benchmark Cohort 001 completion criteria
+
+**Decision:** Benchmark Cohort 001 is considered complete only when all four conditions are met:
+
+1. Invalid domains removed (parked, offline, or incorrectly recorded)
+2. Duplicate firms removed (same firm entered under multiple domains)
+3. Sector field populated for all prospects
+4. Benchmark report regenerated from the cleaned cohort
+
+**Reason:** Future benchmark reports will be compared against Cohort 001 as the baseline. A baseline with missing data fields or contaminated records would undermine the validity of any comparison. Completeness criteria must be defined in advance so the cohort is closed deliberately, not abandoned mid-cleanup.
+
+**Expected outcome:** A clean, auditable benchmark cohort that serves as the reference point for all future sector benchmarking — one where every firm record is valid, correctly attributed, and fully populated.
+
+---
+
 ### D024 — Add Score Explainability as a product requirement
 
 **Decision:** Score Explainability is added to the roadmap as a Next-cycle product requirement. Every check result must be traceable to the raw evidence observed — the actual DNS record, header value, or policy string — not just the pass/warn/fail verdict.
