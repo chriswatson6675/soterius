@@ -6,6 +6,36 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-14
 
+### D029 — Digital Trust Visibility as the Long-Term Company Mission
+
+**Decision:** The long-term mission of Soterius is to make digital trust visible, measurable, and comparable for professional services firms.
+
+The Security Rating, Benchmark Intelligence, Monitoring Platform, and future Trust Certification programme are mechanisms that support this mission — not independent end goals. Every product decision, commercial offering, and strategic initiative should be evaluated against whether it advances the mission: making digital trust visible.
+
+**Reason:** Consumers and businesses can easily assess the reputation of a professional services firm through reviews, recommendations, and ratings. They have almost no visibility into how seriously that firm takes cybersecurity, data protection, and digital trust. A client instructing a solicitor with their home purchase, a business sharing financial records with an accountant, or a family placing pension savings with a financial adviser has no independent signal of whether that firm manages digital risk responsibly.
+
+Soterius aims to provide that signal — an independent, objective measure of digital trustworthiness that allows professional services firms to demonstrate their posture and allows clients, insurers, and counterparties to make more informed decisions.
+
+**Strategic implications:**
+
+| Implication | Description |
+|---|---|
+| Benchmark data becomes a strategic asset | Sector-level data shows not just individual scores but the standard the sector is operating to |
+| Monitoring becomes a trust maintenance mechanism | A Trust Mark that does not require ongoing maintenance is a credential, not a signal |
+| Trust Certification becomes a public trust signal | Certification is only valuable if the standard behind it is credible and independently verified |
+| Public trust profiles may become a future product | Firms that achieve certification may benefit from a publicly visible trust profile |
+| Industry trust benchmarking becomes a core capability | The ability to show a sector's posture over time is a unique and compounding asset |
+
+**North Star:** *Make digital trust visible.*
+
+This phrase should serve as the test for any significant product, commercial, or strategic decision. If a proposed action does not make digital trust more visible, measurable, or comparable — for firms or for the clients who rely on them — it should be deprioritised.
+
+**Expected outcome:** Over time, Soterius seeks to become the recognised trust standard for professional services firms — in the same way that review platforms became recognised standards for customer reputation, and in the same way that credit ratings became recognised standards for financial trustworthiness. The asset is not the scanner. The asset is the standard.
+
+**Relationship to D028:** D028 defines the strategic stages (Benchmark Intelligence → Monitoring → Trust Certification). D029 defines why those stages matter and what they are ultimately building toward. D028 answers *how*. D029 answers *why*.
+
+---
+
 ### D028 — Strategic Direction: Build a Digital Trust Platform
 
 **Decision:** Soterius will optimise for becoming a Digital Trust Platform rather than a standalone security scanner.
