@@ -6,6 +6,7 @@ Board-level record of major decisions and approvals. Operational decisions are i
 
 | Date | Decision | Owner | Status |
 |---|---|---|---|
+| 2026-06-14 | Benchmark Cohort 001 Closed — 35 firms, validated baseline established | CEO | Completed |
 | 2026-06-13 | Benchmark Cohort 001 — Initial Analysis Complete | CEO | Active |
 | 2026-06-13 | Benchmark Cohort 001 approved — North Wales Solicitor Benchmark, 71 firms | CEO | Active |
 | 2026-06-13 | Phase transition — Foundation Phase complete, Benchmark Phase active | CEO | Active |
@@ -21,6 +22,67 @@ Board-level record of major decisions and approvals. Operational decisions are i
 ---
 
 ## Decision Detail
+
+### 2026-06-14 — Benchmark Cohort 001 Closed
+
+**Status:** Completed
+
+**Date:** 2026-06-14
+
+**Summary:** Benchmark Cohort 001 has been completed, validated, and accepted as the baseline benchmark dataset for Soterius.
+
+The cohort underwent the following validation steps:
+
+- Scanner validation
+- Scoring validation
+- DNS email detection bug fix
+- Data quality review
+- Duplicate removal
+- Invalid domain removal
+- Benchmark regeneration
+
+**Final Cohort Statistics:**
+
+| Metric | Value |
+|---|---|
+| Firms Analysed | 35 |
+| Average Rating | 579 / 999 |
+| Median Rating | 559 / 999 |
+| Rating Range | 110 – 949 |
+
+**Risk Distribution:**
+
+| Band | Firms |
+|---|---|
+| Excellent | 2 |
+| Good | 3 |
+| Moderate Risk | 9 |
+| High Risk | 17 |
+| Critical Risk | 4 |
+
+**Security Findings:**
+
+| Metric | Rate |
+|---|---|
+| SPF Adoption | 89% |
+| DKIM Adoption | 54% |
+| DMARC Adoption | 57% |
+| DMARC Enforcement | 40% |
+| SSL/TLS Average | 92% |
+
+**Key Observations:**
+
+- 60% of firms were classified as High Risk or Critical Risk.
+- Only 14% of firms achieved a Good or Excellent rating.
+- Email security adoption was stronger than initially expected.
+- DMARC enforcement remains low across the cohort.
+- Security controls beyond SSL/TLS appear to be the primary source of risk.
+
+**Strategic Outcome:** Benchmark Cohort 001 is now considered the trusted baseline dataset for future benchmarking, trend analysis, and market intelligence activities.
+
+**Next Phase:** Transition from Build & Validation to Growth & Commercialisation. Future benchmark cohorts will be compared against Benchmark Cohort 001 as the reference baseline.
+
+---
 
 ### 2026-06-13 — Benchmark Cohort 001: Initial Analysis Complete
 
