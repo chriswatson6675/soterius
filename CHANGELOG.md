@@ -2,6 +2,42 @@
 
 ---
 
+## 2026-06-14
+
+### Bug Fix — Email Scanner: Zero Score for Valid SPF/DMARC (Scanner Accuracy Validation)
+
+**Issue identified during scanner accuracy validation against darwingray.com.**
+
+Independent verification (MXToolbox) confirmed:
+- SPF: record exists and is valid
+- DMARC: record exists, policy `p=none`
+
+Soterius stored `email: { achieved: 0, maximum: 56, percentage: 0 }` — inconsistent with the scoring model.
+
+**Root cause:**
+
+DNS email authentication records (SPF, DMARC, DKIM) are always published at the apex/organisational domain (e.g. `darwingray.com`), never on `www.` subdomains. The email scanner was performing all DNS lookups against the domain string as received, without stripping a `www.` prefix. If the domain was entered or stored as `www.darwingray.com`:
+
+- `resolveTxt('www.darwingray.com')` → no SPF record → SPF: FAIL → 0 pts
+- `resolveTxt('_dmarc.www.darwingray.com')` → no DMARC record → DMARC: FAIL, `points: 0` → 0 pts
+- All 10 DKIM selectors queried at `www.darwingray.com` → no records → DKIM: FAIL → 0 pts
+- Total email score: 0/56
+
+**Secondary issue:** The public `POST /api/scan` route passed the raw `req.body.domain` value directly to `executeScan()` without normalising (stripping scheme, `www.`, or path). The `validateDomain()` helper strips these internally for validation but never returns the cleaned value to the caller, meaning a domain entered with a scheme or `www.` prefix would be scanned incorrectly.
+
+**Fix:**
+
+- `backend/scanners/dns-check.js` — strip `www.` prefix before all DNS lookups (`apex = domain.replace(/^www\./, '')`)
+- `backend/routes/scan.js` — normalise domain from `req.body` (strip scheme, `www.`, and path) before calling `executeScan`
+
+**Expected result after fix:** A domain with valid SPF (`p=~all`) and DMARC (`p=none`) but no detected DKIM should score 28/56 (50%): SPF PASS = 8 pts, DMARC WARNING with `points: 20` = 20 pts, DKIM FAIL = 0 pts.
+
+**Files Modified:**
+- `backend/scanners/dns-check.js`
+- `backend/routes/scan.js`
+
+---
+
 ## 2026-06-13
 
 ### Research Mode — Internal Benchmark Scanning

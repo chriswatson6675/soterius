@@ -4,6 +4,26 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ---
 
+## 2026-06-14
+
+### D024 — Add Score Explainability as a product requirement
+
+**Decision:** Score Explainability is added to the roadmap as a Next-cycle product requirement. Every check result must be traceable to the raw evidence observed — the actual DNS record, header value, or policy string — not just the pass/warn/fail verdict.
+
+**Reason:** Scanner accuracy validation revealed that outputs cannot easily be verified without access to the underlying evidence. Trust in the scoring model depends on the ability to audit results. A score that cannot be traced to evidence cannot be defended to a prospect, validated against external tools, or used as the basis for a benchmark claim.
+
+**Impact:** Each scanner must be updated to return an `evidence` field alongside `status`, `details`, and `points`. Evidence is stored within the existing `scanner_results` JSON column — no schema migration required. Reports (PDF and scan results page) must surface the evidence. This makes manual cross-validation against tools such as MXToolbox straightforward.
+
+---
+
+### D023 — Validate scanner accuracy before scaling benchmark collection
+
+**Decision:** Validate scanner findings against manual verification for a representative set of firms across different risk bands before continuing bulk benchmark collection.
+
+**Reason:** Benchmark credibility depends on confidence in scanner outputs and category scoring. Manual spot-checks against known-good tools provide assurance that the automated scanner is producing correct results — catching any systematic misreads before they propagate across hundreds of firms.
+
+---
+
 ## 2026-06-13
 
 ### D022 — Retain Security Rating v1.0 methodology following initial benchmark analysis

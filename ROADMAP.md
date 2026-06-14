@@ -20,6 +20,29 @@ This repository is the single source of truth for all product and technical deci
 
 ## Now
 
+### Scanner Accuracy Validation ← immediate priority
+
+**Objective:** Validate scanner findings against manual verification for representative firms across different risk bands.
+
+**Validation Targets:**
+- One Excellent firm
+- One High Risk firm
+- One Critical Risk firm
+
+**Checks:**
+- SPF
+- DKIM
+- DMARC
+- HSTS
+- CSP
+- X-Frame-Options
+- X-Content-Type-Options
+- Referrer-Policy
+
+**Success criteria:** Scanner findings align with manual verification.
+
+---
+
 ### Benchmark Cohort 001 — North Wales Solicitor Benchmark ← active cohort
 
 **Scope:** All solicitor firms within 25 miles of LL30 2UB.  
@@ -71,6 +94,25 @@ Scan 250 UK professional services firms and establish the first proprietary benc
 ## Next
 
 Features approved for the next development cycle, ordered by dependency.
+
+### Score Explainability
+
+Allow every score and category rating to be traced back to the underlying evidence — the raw DNS record, header value, or policy string that caused a check to pass, warn, or fail.
+
+**Requirements:**
+- Store raw evidence for each check where possible (the actual record or value observed)
+- Surface evidence in reports (PDF and scan results page)
+- Display why points were awarded or deducted, not just the outcome
+- Enable manual validation against external tools (MXToolbox, security header checkers)
+
+**Examples of evidence display:**
+- SPF PASS — `v=spf1 include:spf.protection.outlook.com -all`
+- DMARC WARNING — `p=none`
+- Headers FAIL — Missing: CSP, HSTS, X-Frame-Options
+
+**Purpose:** Increase trust in the scoring model, support benchmark validation, and give firms actionable evidence rather than opaque verdicts.
+
+**Dependencies:** No schema changes required if evidence is stored within the existing `scanner_results` JSON column. Scanners must return an `evidence` field alongside `status` and `details`.
 
 ### Monitoring Subscription
 Allow a firm to opt in to monthly automated rescans. Stores `{domain, email, frequency}` in a new `monitoring_subscriptions` table. A cron job (Railway scheduled task) runs the scan and emails a comparison: new score vs. previous score, what changed, and recommended next actions. This is the direct commercial follow-on to the history features now live.

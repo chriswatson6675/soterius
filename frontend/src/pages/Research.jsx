@@ -56,7 +56,7 @@ function TokenGate({ onToken }) {
 
 // ── Scan result panel ─────────────────────────────────────────────────────────
 
-function ResultPanel({ result }) {
+function ResultPanel({ result, onDelete }) {
   const color = BAND_COLOR[result.riskLevel] || '#64748b';
   const bg    = BAND_BG[result.riskLevel]    || '#f8fafc';
   const rating = ratingFromPct(result.score);
