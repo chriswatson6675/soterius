@@ -4,6 +4,55 @@
 
 ## 2026-06-14
 
+### Benchmark Regeneration — Cohort 001
+
+Following the email scanner bug fix (www. prefix DNS lookup issue), all 42 benchmark prospects in Cohort 001 were rescanned using the corrected scanner. Statistics and BENCHMARK_REPORT_001.md generated from corrected scan data.
+
+**Script:** `backend/scripts/regenerate-benchmark.js`
+
+**Regeneration results:**
+- Prospects loaded: 42
+- Successful scans: 42
+- Scan failures: 0
+- Excluded (invalid/duplicate): 0
+
+**Benchmark statistics — Cohort 001 (42 firms):**
+
+| Metric | Value |
+|---|---|
+| Average rating | 500 / 999 |
+| Median rating | 539 / 999 |
+| Rating range | 30 – 909 |
+| Excellent | 2 (5%) |
+| Good | 3 (7%) |
+| Moderate Risk | 10 (24%) |
+| High Risk | 17 (40%) |
+| Critical Risk | 10 (24%) |
+| High Risk + Critical Risk | 27 (64%) |
+| SPF adoption | 79% |
+| DKIM adoption | 43% |
+| DMARC adoption (any record) | 48% |
+| DMARC enforcement (quarantine/reject) | 33% |
+
+**Category averages:**
+- SSL/TLS: 76% · Email: 43% · Headers: 18% · Vulnerable Components: 64% · GDPR: 67%
+
+**Top failed checks:** Referrer-Policy (90%), CSP (86%), HSTS (81%), X-Frame-Options (81%), X-Content-Type-Options (74%), DKIM (57%), DMARC (52%)
+
+**Anomalies identified (require cohort cleanup):**
+- `darwingray.co.uk` (score 30) — inactive/parked; same firm as `darwingray.com`
+- `tudotowne.co.uk` (score 30) — typo; correct domain is `tudurowen.co.uk`
+- `tudorowen.co.uk` (score 30) — likely inactive; active site is `tudurowen.co.uk`
+- `averprimelaw.co.uk` (score 30) — likely typo or old domain vs `acerprimelaw.co.uk`
+- `edwardhughes.co.uk` (score 30) — inactive; same firm as `edwardhugheslaw.co.uk`
+- Sector field empty for all 42 firms — sector benchmarking not yet possible
+
+**Files created/modified:**
+- `backend/scripts/regenerate-benchmark.js` — new regeneration script
+- `BENCHMARK_REPORT_001.md` — first Soterius benchmark report
+
+---
+
 ### Bug Fix — Email Scanner: Zero Score for Valid SPF/DMARC (Scanner Accuracy Validation)
 
 **Issue identified during scanner accuracy validation against darwingray.com.**
