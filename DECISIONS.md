@@ -6,6 +6,29 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-14
 
+### D027 — The Soterius Trust Mark will not be awarded solely on the basis of the automated Security Rating
+
+**Decision:** The Soterius Trust Mark will not be awarded solely on the basis of the automated Security Rating score. Website scanning provides valuable external evidence but does not assess internal controls, staff risk, identity management, governance, or operational security.
+
+**Reason:** A trust mark that can be satisfied by a single automated scan does not represent a credible or defensible standard. External scanning assesses only what is publicly visible — it cannot see whether staff have received security training, whether access to systems is controlled, whether there is a documented incident response plan, or whether devices are managed and patched. A firm could score 999 on the external scan and still suffer a serious breach through phishing, credential theft, or insider risk.
+
+**Impact:** The Security Rating becomes one pillar of a broader Digital Trust Framework. The automated scan is a necessary condition for Trust Mark certification, not a sufficient one. Future Trust Mark certification will require evidence across multiple pillars.
+
+**Proposed Trust Framework Pillars:**
+
+| Pillar | Scope |
+|---|---|
+| 1. Digital Presence Security | Website and email infrastructure — assessed by the automated Security Rating |
+| 2. Email Security | SPF, DKIM, DMARC enforcement — partially covered by the scanner; requires configuration evidence |
+| 3. Human Risk | Staff awareness training, phishing resistance, security culture |
+| 4. Identity & Access Management | MFA, password policy, access controls, privileged account management |
+| 5. Endpoint & Infrastructure Security | Device management, patching, antivirus, remote access controls |
+| 6. Governance & Compliance | Documented policies, incident response plan, data processing records, supplier risk |
+
+**Design note:** The automated Security Rating addresses Pillars 1 and 2. Pillars 3–6 require a separate assessment methodology — self-attestation, document review, or third-party audit — to be defined in the Digital Trust Framework Design initiative.
+
+---
+
 ### D026 — Sector classification is separate from the scan workflow
 
 **Decision:** Sector classification is not required during public website scans. The scan form does not mandate a sector field, and absence of a sector does not affect scoring or scan execution.

@@ -143,6 +143,35 @@ Productised version of monitoring subscriptions with a payment gate (Stripe). In
 ### White-label Reporting for IT Providers
 Allow IT managed service providers to run scans and brand the PDF report for their clients. Requires API key management and PDF template customisation.
 
+### Digital Trust Framework Design ← Future Strategic Initiative
+
+**Objective:** Define the full assessment framework that will underpin future Soterius Trust Mark certification.
+
+**Background:** The automated Security Rating (D027) is one pillar of trust, not the complete picture. Website scanning assesses digital presence and email infrastructure. It cannot assess internal controls, staff behaviour, access management, endpoint security, or governance. A credible Trust Mark requires a framework that covers all of these.
+
+**Proposed Trust Framework Pillars:**
+
+| Pillar | Scope | Assessment method |
+|---|---|---|
+| 1. Digital Presence Security | Website and email infrastructure | Automated Security Rating (current) |
+| 2. Email Security | SPF, DKIM, DMARC enforcement + configuration evidence | Automated + configuration review |
+| 3. Human Risk | Staff training, phishing awareness, security culture | Self-attestation + training records |
+| 4. Identity & Access Management | MFA, password policy, access controls | Self-attestation + policy documents |
+| 5. Endpoint & Infrastructure Security | Device management, patching, antivirus | Self-attestation + MDM evidence |
+| 6. Governance & Compliance | Policies, incident response, data processing records, supplier risk | Document review |
+
+**Deliverable:** A published Digital Trust Framework document defining:
+- Minimum requirements per pillar for each Trust Mark tier
+- Assessment methodology per pillar (automated / self-attestation / third-party audit)
+- Renewal frequency and evidence requirements
+- How the Security Rating integrates as Pillar 1
+
+**Dependencies:** Requires commercial validation of the Security Rating product and at least one completed benchmark cycle before framework scope is finalised. Findings from live client engagements should inform what is achievable and credible before this is designed.
+
+**Decision reference:** D027
+
+---
+
 ### Soterius Digital Trust Mark
 A verification programme allowing firms to display a Soterius trust badge based on Security Rating and continuous monitoring.
 
