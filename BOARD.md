@@ -82,6 +82,16 @@ The cohort underwent the following validation steps:
 
 **Next Phase:** Transition from Build & Validation to Growth & Commercialisation. Future benchmark cohorts will be compared against Benchmark Cohort 001 as the reference baseline.
 
+**Top 3 findings across the cohort (from BENCHMARK_FINDINGS_001.md):**
+
+| Rank | Finding | Firms Affected |
+|---|---|---|
+| 1 | Referrer-Policy missing | 31 of 35 (89%) |
+| 2 | Content Security Policy missing or misconfigured | 30 of 35 (86%) |
+| 3 | DMARC not enforced (no record or p=none) | 28 of 35 (80%) |
+
+Security headers are the dominant finding class. All five header checks appear in the top 10; all are remediable through web server configuration without application code changes. DMARC enforcement is the primary email security gap — 46% of firms have no DMARC record at all.
+
 ---
 
 ### 2026-06-13 — Benchmark Cohort 001: Initial Analysis Complete
