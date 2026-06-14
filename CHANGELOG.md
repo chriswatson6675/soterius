@@ -4,6 +4,36 @@
 
 ## 2026-06-14
 
+### Benchmark Cohort 001 — Validation Complete (35 firms, final)
+
+Manual validation confirmed that `humphrys.co.uk` and `torglaw.co.uk` are not active websites. Both removed from the cohort. Benchmark regenerated from 35 clean prospects.
+
+**Cohort:** 42 initial → 35 final (7 removed across two cleanup passes)
+
+**Final benchmark statistics — Cohort 001 (35 firms):**
+
+| Metric | Value |
+|---|---|
+| Average rating | 579 / 999 |
+| Median rating | 559 / 999 |
+| Rating range | 110 – 949 |
+| Excellent | 2 (6%) |
+| Good | 3 (9%) |
+| Moderate Risk | 9 (26%) |
+| High Risk | 17 (49%) |
+| Critical Risk | 4 (11%) |
+| High Risk + Critical Risk | 21 (60%) |
+| SPF adoption | 89% |
+| DKIM adoption | 54% |
+| DMARC adoption (any record) | 57% |
+| DMARC enforcement (quarantine/reject) | 40% |
+
+**Category averages:** SSL/TLS 92% · Email 52% · Headers 21% · Vulnerable Components 74% · GDPR 70%
+
+**Files updated:** `BENCHMARK_REPORT_001.md`, `backend/scripts/cleanup-cohort-001b.js`
+
+---
+
 ### Benchmark Regeneration — Cohort 001 (final, clean cohort)
 
 Full regeneration workflow: cohort cleanup, script enhancement (low-score flagging + interactive delete), and clean rescan of 37 validated prospects.
