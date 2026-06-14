@@ -6,6 +6,22 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-14
 
+### D026 — Sector classification is separate from the scan workflow
+
+**Decision:** Sector classification is not required during public website scans. The scan form does not mandate a sector field, and absence of a sector does not affect scoring or scan execution.
+
+**Reason:** The primary scan workflow should remain frictionless. Requiring sector selection adds friction for the common case — a quick assessment of a single domain — where sector context is irrelevant to the result.
+
+**Impact:** Benchmark cohorts are assigned sectors separately from scanning, through one of:
+
+- CSV imports (bulk prospect creation with sector pre-populated)
+- Admin classification (direct update to existing prospect records)
+- Future automated classification (sector inference from firm name or SRA register data)
+
+The public scan experience remains focused on rapid assessment. Benchmarking retains sector-level reporting capability without coupling it to the scan form.
+
+---
+
 ### D025 — Benchmark Cohort 001 completion criteria
 
 **Decision:** Benchmark Cohort 001 is considered complete only when all four conditions are met:
