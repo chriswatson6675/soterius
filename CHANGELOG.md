@@ -4,52 +4,58 @@
 
 ## 2026-06-14
 
-### Benchmark Regeneration — Cohort 001
+### Benchmark Regeneration — Cohort 001 (final, clean cohort)
 
-Following the email scanner bug fix (www. prefix DNS lookup issue), all 42 benchmark prospects in Cohort 001 were rescanned using the corrected scanner. Statistics and BENCHMARK_REPORT_001.md generated from corrected scan data.
+Full regeneration workflow: cohort cleanup, script enhancement (low-score flagging + interactive delete), and clean rescan of 37 validated prospects.
 
-**Script:** `backend/scripts/regenerate-benchmark.js`
+**Scripts:**
+- `backend/scripts/cleanup-cohort-001.js` — one-off deletion of 5 anomalous prospects
+- `backend/scripts/regenerate-benchmark.js` — benchmark regeneration (updated with low-score flag)
 
-**Regeneration results:**
-- Prospects loaded: 42
-- Successful scans: 42
-- Scan failures: 0
-- Excluded (invalid/duplicate): 0
+**Cohort cleanup — 5 prospects deleted:**
+- `darwingray.co.uk` — inactive/parked; duplicate of `darwingray.com`
+- `tudotowne.co.uk` — typo; correct domain is `tudurowen.co.uk`
+- `tudorowen.co.uk` — inactive; active site is `tudurowen.co.uk`
+- `averprimelaw.co.uk` — likely typo or old domain vs `acerprimelaw.co.uk`
+- `edwardhughes.co.uk` — inactive/parked; duplicate of `edwardhugheslaw.co.uk`
 
-**Benchmark statistics — Cohort 001 (42 firms):**
+**Script enhancement — low-score flag + interactive delete:**
+- Domains scoring ≤ 10% are flagged after scanning with a warning that the domain may be inactive or incorrectly recorded
+- In interactive terminal mode: user is prompted to delete each flagged prospect (and all linked scan records) immediately
+- In non-interactive mode: flags are reported and carried into the report's Data Quality Notes
+- Threshold constant `LOW_SCORE_FLAG = 10` — adjustable
+
+**Benchmark statistics — Cohort 001 (37 firms, clean):**
 
 | Metric | Value |
 |---|---|
-| Average rating | 500 / 999 |
-| Median rating | 539 / 999 |
-| Rating range | 30 – 909 |
+| Average rating | 559 / 999 |
+| Median rating | 559 / 999 |
+| Rating range | 70 – 909 |
 | Excellent | 2 (5%) |
-| Good | 3 (7%) |
-| Moderate Risk | 10 (24%) |
-| High Risk | 17 (40%) |
-| Critical Risk | 10 (24%) |
-| High Risk + Critical Risk | 27 (64%) |
-| SPF adoption | 79% |
-| DKIM adoption | 43% |
-| DMARC adoption (any record) | 48% |
-| DMARC enforcement (quarantine/reject) | 33% |
+| Good | 3 (8%) |
+| Moderate Risk | 10 (27%) |
+| High Risk | 17 (46%) |
+| Critical Risk | 5 (14%) |
+| High Risk + Critical Risk | 22 (59%) |
+| SPF adoption | 89% |
+| DKIM adoption | 51% |
+| DMARC adoption (any record) | 54% |
+| DMARC enforcement (quarantine/reject) | 38% |
 
 **Category averages:**
-- SSL/TLS: 76% · Email: 43% · Headers: 18% · Vulnerable Components: 64% · GDPR: 67%
+- SSL/TLS: 87% · Email: 49% · Headers: 20% · Vulnerable Components: 72% · GDPR: 69%
 
-**Top failed checks:** Referrer-Policy (90%), CSP (86%), HSTS (81%), X-Frame-Options (81%), X-Content-Type-Options (74%), DKIM (57%), DMARC (52%)
+**Top failed checks:** Referrer-Policy (89%), CSP (84%), HSTS (78%), X-Frame-Options (78%), X-Content-Type-Options (70%), DKIM (49%), DMARC (46%)
 
-**Anomalies identified (require cohort cleanup):**
-- `darwingray.co.uk` (score 30) — inactive/parked; same firm as `darwingray.com`
-- `tudotowne.co.uk` (score 30) — typo; correct domain is `tudurowen.co.uk`
-- `tudorowen.co.uk` (score 30) — likely inactive; active site is `tudurowen.co.uk`
-- `averprimelaw.co.uk` (score 30) — likely typo or old domain vs `acerprimelaw.co.uk`
-- `edwardhughes.co.uk` (score 30) — inactive; same firm as `edwardhugheslaw.co.uk`
-- Sector field empty for all 42 firms — sector benchmarking not yet possible
+**Remaining flags (not deleted — non-interactive run):**
+- `humphrys.co.uk` (70 / 999, 7%) — possibly inactive; review manually
+- `torglaw.co.uk` (70 / 999, 7%) — possibly inactive; review manually
 
 **Files created/modified:**
-- `backend/scripts/regenerate-benchmark.js` — new regeneration script
-- `BENCHMARK_REPORT_001.md` — first Soterius benchmark report
+- `backend/scripts/cleanup-cohort-001.js` — one-off cohort cleanup script
+- `backend/scripts/regenerate-benchmark.js` — updated with low-score flag + interactive delete
+- `BENCHMARK_REPORT_001.md` — final benchmark report (37 firms, clean cohort)
 
 ---
 

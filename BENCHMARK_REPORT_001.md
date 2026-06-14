@@ -15,20 +15,20 @@
 
 This report presents the findings from the first Soterius benchmark dataset — a complete scan of solicitor firms within 25 miles of Llandudno Junction (LL30 2UB), sourced from the SRA regulated firms register.
 
-**42 solicitor firms** were analysed.
+**37 solicitor firms** were analysed.
 
 | Metric | Value |
 |---|---|
-| Firms analysed | **42** |
-| Average Security Rating | **500 / 999** |
-| Median Security Rating | **539 / 999** |
-| Rating range | 30 – 909 |
-| High Risk or Critical Risk | **64%** (27 firms) |
-| SPF adoption | 79% |
-| DMARC adoption (any record) | 48% |
-| DMARC enforcement (quarantine/reject) | 33% |
+| Firms analysed | **37** |
+| Average Security Rating | **559 / 999** |
+| Median Security Rating | **559 / 999** |
+| Rating range | 70 – 909 |
+| High Risk or Critical Risk | **59%** (22 firms) |
+| SPF adoption | 89% |
+| DMARC adoption (any record) | 54% |
+| DMARC enforcement (quarantine/reject) | 38% |
 
-**64%** of firms fall into the High Risk or Critical Risk categories. The primary failures are in email authentication and security headers — both categories where remediation is achievable quickly and at low cost.
+**59%** of firms fall into the High Risk or Critical Risk categories. The primary failures are in email authentication and security headers — both categories where remediation is achievable quickly and at low cost.
 
 This report was produced following the identification and resolution of a DNS lookup bug that caused email security checks to return 0/56 for domains stored with a `www.` prefix. All scan records were regenerated on 2026-06-14 using the corrected scanner.
 
@@ -82,8 +82,8 @@ Points earned as a percentage of 206 are mapped to a 0–999 display rating. Ris
 
 | Metric | Count |
 |---|---|
-| Total prospects in cohort | 42 |
-| Firms included in this report | **42** |
+| Total prospects in cohort | 37 |
+| Firms included in this report | **37** |
 | Excluded (invalid/duplicate) | 0 |
 | Scan failures | 0 |
 
@@ -91,7 +91,7 @@ Points earned as a percentage of 206 are mapped to a 0–999 display rating. Ris
 
 | Sector                   | Count | Avg Rating |
 |--------------------------|-------|------------|
-| Unknown                  |    42 |     500 |
+| Unknown                  |    37 |     559 |
 
 ---
 
@@ -100,41 +100,41 @@ Points earned as a percentage of 206 are mapped to a 0–999 display rating. Ris
 | Band             | Count | Share |                    |
 |------------------|-------|-------|--------------------|
 | Excellent        |     2 |   5% | █ |
-| Good             |     3 |   7% | █ |
-| Moderate Risk    |    10 |  24% | █████ |
-| High Risk        |    17 |  40% | ████████ |
-| Critical Risk    |    10 |  24% | █████ |
+| Good             |     3 |   8% | ██ |
+| Moderate Risk    |    10 |  27% | █████ |
+| High Risk        |    17 |  46% | █████████ |
+| Critical Risk    |     5 |  14% | ███ |
 
-**64%** of firms are rated High Risk or Critical Risk.
+**59%** of firms are rated High Risk or Critical Risk.
 
 ### Average Score by Category
 
 | Category                   | Avg % |
 |----------------------------|-------|
-| SSL/TLS Encryption         |   76% |
-| Email Security             |   43% |
-| Security Headers           |   18% |
-| Vulnerable Components      |   64% |
-| GDPR / Cookie Compliance   |   67% |
+| SSL/TLS Encryption         |   87% |
+| Email Security             |   49% |
+| Security Headers           |   20% |
+| Vulnerable Components      |   72% |
+| GDPR / Cookie Compliance   |   69% |
 
 ---
 
 ## Email Security Findings
 
-Email Security is the lowest-performing category in this cohort, with an average of **43%**.
+Email Security is the lowest-performing category in this cohort, with an average of **49%**.
 
 ### SPF (Sender Policy Framework)
 
 SPF records specify which mail servers are authorised to send email on behalf of a domain. Without SPF, anyone can send email appearing to come from a firm's address.
 
-- **79%** of firms have an SPF record (33 of 42)
-- **21%** of firms (9) have no SPF record
+- **89%** of firms have an SPF record (33 of 37)
+- **11%** of firms (4) have no SPF record
 
 ### DKIM (DomainKeys Identified Mail)
 
 DKIM adds a cryptographic signature to outbound emails, allowing recipients to verify that an email genuinely came from the sending domain. Detection checks 10 common selector names; the true adoption rate may be higher.
 
-- **43%** of firms have a detectable DKIM record (18 of 42)
+- **51%** of firms have a detectable DKIM record (19 of 37)
 
 ### DMARC (Domain-based Message Authentication, Reporting & Conformance)
 
@@ -142,14 +142,14 @@ DMARC policy instructs receiving mail servers on what to do with messages that f
 
 | Policy Level                         | Firms | Share |
 |--------------------------------------|-------|-------|
-| No record                            |    22 |  52% |
-| Monitoring only (p=none)             |     6 |  14% |
-| Partial protection (p=quarantine)    |     7 |  17% |
-| Full protection (p=reject)           |     7 |  17% |
+| No record                            |    17 |  46% |
+| Monitoring only (p=none)             |     6 |  16% |
+| Partial protection (p=quarantine)    |     7 |  19% |
+| Full protection (p=reject)           |     7 |  19% |
 
-- **DMARC adoption:** 48% of firms have any DMARC record (20 of 42)
-- **DMARC enforcement:** 33% of firms have active enforcement — p=quarantine or p=reject (14 of 42)
-- **52%** of firms have no DMARC record at all — email from their domain can be trivially spoofed
+- **DMARC adoption:** 54% of firms have any DMARC record (20 of 37)
+- **DMARC enforcement:** 38% of firms have active enforcement — p=quarantine or p=reject (14 of 37)
+- **46%** of firms have no DMARC record at all — email from their domain can be trivially spoofed
 
 ---
 
@@ -161,42 +161,42 @@ Security headers are HTTP response headers that instruct browsers on how to hand
 
 | Header                      | Pass | Warning | Fail | Adoption |
 |-----------------------------|------|---------|------|----------|
-| HSTS                         |    8 |       0 |   34 |  19% |
-| Content Security Policy      |    5 |       1 |   36 |  14% |
-| X-Frame-Options              |    8 |       0 |   34 |  19% |
-| X-Content-Type-Options       |   11 |       0 |   31 |  26% |
-| Referrer-Policy              |    4 |       0 |   38 |  10% |
+| HSTS                         |    8 |       0 |   29 |  22% |
+| Content Security Policy      |    5 |       1 |   31 |  16% |
+| X-Frame-Options              |    8 |       0 |   29 |  22% |
+| X-Content-Type-Options       |   11 |       0 |   26 |  30% |
+| Referrer-Policy              |    4 |       0 |   33 |  11% |
 
 ### Most Common Failed Checks (all categories)
 
 | Check                                        | Firms | Share |
 |----------------------------------------------|-------|-------|
-| Referrer-Policy set                          |    38 |  90% |
-| Content Security Policy set                  |    36 |  86% |
-| HSTS present                                 |    34 |  81% |
-| X-Frame-Options set                          |    34 |  81% |
-| X-Content-Type-Options set                   |    31 |  74% |
-| DKIM configured                              |    24 |  57% |
-| DMARC policy enforced                        |    22 |  52% |
-| Framework and CMS versions not publicly disclosed |    18 |  43% |
-| No known CVEs in detected software           |    11 |  26% |
-| No outdated third-party libraries detected   |    11 |  26% |
+| Referrer-Policy set                          |    33 |  89% |
+| Content Security Policy set                  |    31 |  84% |
+| HSTS present                                 |    29 |  78% |
+| X-Frame-Options set                          |    29 |  78% |
+| X-Content-Type-Options set                   |    26 |  70% |
+| DKIM configured                              |    18 |  49% |
+| DMARC policy enforced                        |    17 |  46% |
+| Framework and CMS versions not publicly disclosed |    13 |  35% |
+| No known CVEs in detected software           |     6 |  16% |
+| No outdated third-party libraries detected   |     6 |  16% |
 
 ---
 
 ## Key Observations
 
-1. **Email spoofing risk is the dominant finding.** 52% of firms have no DMARC record, and only 33% have enforcement-level policies. Solicitors handling client money, legal documents, and confidential instructions are high-value phishing targets. The absence of email authentication controls represents the most significant and remediable security gap in this cohort.
+1. **Email spoofing risk is the dominant finding.** 46% of firms have no DMARC record, and only 38% have enforcement-level policies. Solicitors handling client money, legal documents, and confidential instructions are high-value phishing targets. The absence of email authentication controls represents the most significant and remediable security gap in this cohort.
 
 2. **Security headers are broadly absent.** The most commonly failed checks are security headers, all achievable in under 30 minutes. The failure rate reflects a lack of proactive security configuration rather than technical complexity — these firms are not hardened, but hardening is straightforward.
 
-3. **SPF is more widely adopted than DMARC.** 79% of firms have SPF vs 48% with any DMARC. Many firms have partially implemented email authentication without completing the full chain. SPF alone provides limited protection without DMARC enforcement.
+3. **SPF is more widely adopted than DMARC.** 89% of firms have SPF vs 54% with any DMARC. Many firms have partially implemented email authentication without completing the full chain. SPF alone provides limited protection without DMARC enforcement.
 
-4. **Monitoring-only DMARC is a common partial deployment.** 14% of firms have DMARC `p=none` — this collects reports but provides no protection against spoofing. These firms have demonstrated awareness of DMARC but have not taken the final step to enforcement.
+4. **Monitoring-only DMARC is a common partial deployment.** 16% of firms have DMARC `p=none` — this collects reports but provides no protection against spoofing. These firms have demonstrated awareness of DMARC but have not taken the final step to enforcement.
 
-5. **Score distribution is credible.** The 64% High/Critical Risk concentration is consistent with the profile of small-to-medium professional services firms without dedicated IT security resource. Band distribution is non-trivial — firms are spread across the full range, and the scoring model produces meaningful differentiation.
+5. **Score distribution is credible.** The 59% High/Critical Risk concentration is consistent with the profile of small-to-medium professional services firms without dedicated IT security resource. Band distribution is non-trivial — firms are spread across the full range, and the scoring model produces meaningful differentiation.
 
-6. **SSL/TLS is the strongest category** (average: 76%), reflecting widespread adoption of basic HTTPS across the sector.
+6. **SSL/TLS is the strongest category** (average: 87%), reflecting widespread adoption of basic HTTPS across the sector.
 
 ---
 
@@ -223,29 +223,16 @@ Upgrade the policy incrementally:
 
 ### Sector-wide observation
 
-A DMARC enforcement rate of 33% in a sector where firms routinely communicate client money instructions and sensitive legal documents by email represents significant exposure. Raising DMARC enforcement to even 50% of firms would materially reduce the attack surface for email-based fraud targeting this sector.
+A DMARC enforcement rate of 38% in a sector where firms routinely communicate client money instructions and sensitive legal documents by email represents significant exposure. Raising DMARC enforcement to even 50% of firms would materially reduce the attack surface for email-based fraud targeting this sector.
 
 ---
 
 ## Data Quality Notes
 
-All 42 prospects scanned successfully with zero scan failures. However, manual review of the scan output identified the following issues that require cohort cleanup before the next regeneration:
+### Anomalies flagged (2)
 
-### Anomalies requiring action
-
-| Domain | Score | Issue | Recommended action |
-|---|---|---|---|
-| `darwingray.co.uk` | 30 | Same firm as `darwingray.com`; `.co.uk` appears inactive/parked | Remove from cohort |
-| `tudotowne.co.uk` | 30 | Typo — intended domain is `tudurowen.co.uk` | Remove from cohort |
-| `tudorowen.co.uk` | 30 | Likely old inactive domain; active site is `tudurowen.co.uk` | Remove from cohort |
-| `averprimelaw.co.uk` | 30 | Likely typo or old domain; `acerprimelaw.co.uk` scores 53 | Remove or verify |
-| `edwardhughes.co.uk` | 30 | Same firm as `edwardhugheslaw.co.uk`; appears inactive/parked | Remove from cohort |
-
-**Impact on statistics:** If the 5 anomalous domains above are excluded, the effective sample size drops from 42 to 37 unique active firms, and the Critical Risk count falls from 10 to 6 (from 24% to ~16%). The benchmark statistics in this report include these domains. A cleaned regeneration should follow cohort cleanup.
-
-### Sector metadata missing
-
-All 42 firms show sector as "Unknown" — the sector field was not populated during Research Mode data entry for this cohort. Sector benchmarking (solicitors vs other sectors) is not possible from this dataset. Sector should be set to `solicitors` for all Cohort 001 firms before the next report is generated.
+- **humphrys.co.uk** (`humphrys.co.uk`) — Score 70 / 999 — may be inactive or incorrectly recorded
+- **torglaw.co.uk** (`torglaw.co.uk`) — Score 70 / 999 — may be inactive or incorrectly recorded
 
 ### Known Limitations
 
