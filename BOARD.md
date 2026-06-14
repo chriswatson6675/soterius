@@ -283,9 +283,10 @@ Questions raised at board level that do not yet have a decision. Recorded here f
 
 ## SQ001 — What business is Soterius ultimately becoming?
 
-**Status:** Open
+**Status:** Closed — answered by D028
 
-**Raised:** 2026-06-14
+**Raised:** 2026-06-14  
+**Closed:** 2026-06-14
 
 **Background:**
 

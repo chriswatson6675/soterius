@@ -6,6 +6,46 @@ Decisions are recorded when they are non-obvious, have significant trade-offs, o
 
 ## 2026-06-14
 
+### D028 — Strategic Direction: Build a Digital Trust Platform
+
+**Decision:** Soterius will optimise for becoming a Digital Trust Platform rather than a standalone security scanner.
+
+The company will develop through three strategic stages:
+
+| Stage | Name | Description |
+|---|---|---|
+| 1 | Benchmark Intelligence | Proprietary sector data that cannot be replicated by a late entrant |
+| 2 | Continuous Monitoring | Ongoing relationships, recurring revenue, and historical performance data |
+| 3 | Trust Certification | A recognised standard within professional services markets |
+
+The Security Rating product remains important. It is the acquisition and data collection mechanism that supports these higher-value capabilities — not the destination.
+
+**Reason:** The strongest long-term moat is not the scanner itself. Any well-resourced competitor can build a security scanner. The moat is created through assets that compound over time and become increasingly difficult to replicate:
+
+- **Proprietary benchmark data** — years of validated, sector-specific scan data that a new entrant cannot buy
+- **Historical monitoring data** — longitudinal records of how firms' security postures change over time
+- **Trust framework governance** — a published, credible standard that firms, insurers, and regulators reference
+- **Certification credibility** — the authority that comes from having assessed hundreds or thousands of firms
+- **Industry recognition** — the brand association between "digital trust" and Soterius within professional services
+
+None of these assets exist at launch. All of them are built incrementally. The decision to pursue them must be made early because it shapes every product, commercial, and hiring decision that follows.
+
+**Impact:** Future product decisions should be evaluated against whether they strengthen benchmark intelligence, monitoring capability, or trust certification potential.
+
+The prioritisation framework is:
+
+1. **High priority** — features that build or leverage benchmark data, monitoring relationships, or certification credibility
+2. **Medium priority** — features that improve the scanner and contribute to one of the three strategic stages
+3. **Lower priority** — features that improve the scanner but do not contribute to any of the three strategic stages
+
+This does not mean the scanner stops receiving investment. It means scanner improvements are prioritised based on their contribution to the platform strategy, not in isolation.
+
+**Expected outcome:** A defensible Digital Trust Platform capable of becoming a recognised trust standard within professional services markets — comparable in function to Cyber Essentials in the public sector or ISO 27001 in enterprise, but designed specifically for the scale and commercial context of UK regulated professional services firms.
+
+**Closes:** SQ001 (see BOARD.md)
+
+---
+
 ### D027 — The Soterius Trust Mark will not be awarded solely on the basis of the automated Security Rating
 
 **Decision:** The Soterius Trust Mark will not be awarded solely on the basis of the automated Security Rating score. Website scanning provides valuable external evidence but does not assess internal controls, staff risk, identity management, governance, or operational security.
