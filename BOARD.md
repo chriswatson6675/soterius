@@ -6,6 +6,7 @@ Board-level record of major decisions and approvals. Operational decisions are i
 
 | Date | Decision | Owner | Status |
 |---|---|---|---|
+| 2026-06-14 | Benchmark Insights 001 — commercial and strategic analysis complete | CEO | Recorded |
 | 2026-06-14 | Benchmark Cohort 001 Closed — 35 firms, validated baseline established | CEO | Completed |
 | 2026-06-13 | Benchmark Cohort 001 — Initial Analysis Complete | CEO | Active |
 | 2026-06-13 | Benchmark Cohort 001 approved — North Wales Solicitor Benchmark, 71 firms | CEO | Active |
@@ -22,6 +23,38 @@ Board-level record of major decisions and approvals. Operational decisions are i
 ---
 
 ## Decision Detail
+
+### 2026-06-14 — Benchmark Insights 001: Three Most Important Commercial Findings
+
+**Status:** Recorded
+
+**Source:** BENCHMARK_INSIGHTS_001.md — full commercial and strategic analysis of Cohort 001.
+
+---
+
+**Insight 1: The SSL/TLS vs. Security Headers divergence is the defining commercial opportunity.**
+
+SSL/TLS averages 92% across the cohort. Security Headers average 20%. These categories are logically adjacent — HTTPS is the transport layer, headers are the browser-enforcement layer above it. The gap exists because SSL/TLS was imposed on firms passively (by hosting providers, browsers, Let's Encrypt). Everything above that baseline requires deliberate action. Almost no firm has taken it.
+
+The commercial implication: fixing all five security headers is worth 50 points — 24% of the total possible score — and can be done in under an hour. A High Risk firm in the 50–59% range that fixes all headers in a single session can move to Good, skipping Moderate entirely. This is the fastest, highest-leverage remediation available to this cohort and the most natural first paid engagement for Soterius.
+
+---
+
+**Insight 2: DMARC enforcement is the most dangerous gap — and the best recurring revenue opportunity.**
+
+80% of firms have no DMARC enforcement (46% have no record; 34% have `p=none`). DMARC is the only technical control that prevents email spoofing. For solicitors — who handle client money, conveyancing instructions, and confidential correspondence — email fraud is not a theoretical risk. It is a live, documented threat. The 40-point DMARC check is the single most heavily weighted check in the scoring model.
+
+The commercial implication: DMARC remediation cannot be done in an afternoon. It requires 4–8 weeks of phased monitoring (p=none → p=quarantine → p=reject). That sustained engagement is the foundation of a recurring service. Unlike headers, DMARC must be maintained — firms that reach p=reject can revert under pressure from email delivery issues. Monitoring is required indefinitely.
+
+---
+
+**Insight 3: Only 14% of firms achieve Good or Excellent — Trust Mark scarcity is an asset, not a problem.**
+
+5 of 35 firms (14%) currently meet the standard for a Good or Excellent rating. This is the right level of scarcity for a Trust Mark to have commercial value. If 80% of firms could achieve it immediately, it means nothing. If 14% hold it and the rest can see a clear path to qualifying, it becomes an aspirational purchase incentive for the other 86%.
+
+The commercial implication: define Trust Mark eligibility criteria now, based on Cohort 001 data, before the market is saturated. Anchor it at Good (75%+) with minimum requirements on HSTS, CSP, SPF, and DMARC enforcement. Publish eligibility. Then sell the remediation pathway.
+
+---
 
 ### 2026-06-14 — Benchmark Cohort 001 Closed
 
